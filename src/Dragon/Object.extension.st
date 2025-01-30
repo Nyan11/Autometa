@@ -43,3 +43,10 @@ Object >> generateDragonDescriptionInPackage: aPackage [
 
 	^ self class generateDragonDescriptionInPackage: aPackage
 ]
+
+{ #category : '*Dragon' }
+Object class >> removeDragonDescription [
+
+	(Pragma allNamed: #dragonDescription in: self) do: [ :pragma |
+		self removeSelector: pragma method selector ].
+]
