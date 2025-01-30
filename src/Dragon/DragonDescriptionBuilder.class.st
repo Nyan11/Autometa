@@ -21,6 +21,27 @@ DragonDescriptionBuilder >> build [
 ]
 
 { #category : 'building' }
+DragonDescriptionBuilder >> buildAccessorsDescriptionForSelector: selector andInstances: allInstances [
+
+	| allValues allValueTypes description |
+	allValues := allInstances collect: [ :inst |
+		             [ inst perform: selector ]
+			             on: Error
+			             do: [ ^ self ] ].
+
+	allValueTypes := (allValues collect: #class) asSet.
+
+	description := DragonSlotDescription new
+		               slot: selector;
+		               possibleGetterSelectors: { selector };
+		               possibleSetterSelectors: { selector asMutator };
+		               knownTypeValues: allValueTypes;
+		               yourself.
+
+	self installDragonDescription: description
+]
+
+{ #category : 'building' }
 DragonDescriptionBuilder >> buildAccessorsFor: aClass [
 
 	| allInstances allZeroArgMethod allOneArgMethod allGetterWithAssociatedMutator |
@@ -37,17 +58,10 @@ DragonDescriptionBuilder >> buildAccessorsFor: aClass [
 			                                  :setter |
 			                                  setter = getter asMutator ] ].
 	allGetterWithAssociatedMutator do: [ :selector |
-		| allValues allValueTypes description |
-		allValues := allInstances collect: [ :inst | inst perform: selector ].
-		allValueTypes := (allValues collect: #class) asSet.
-
-		description := DragonSlotDescription new
-			               slot: selector;
-			               possibleGetterSelectors: { selector };
-			               possibleSetterSelectors: { selector asMutator };
-			               knownTypeValues: allValueTypes;
-			               yourself.
-		self installDragonDescription: description ]
+		self
+			buildAccessorsDescriptionForSelector: selector
+			andInstances: allInstances.
+		 ]
 ]
 
 { #category : 'building' }
