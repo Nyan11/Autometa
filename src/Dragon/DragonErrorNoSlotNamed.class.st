@@ -1,6 +1,7 @@
 Class {
 	#name : 'DragonErrorNoSlotNamed',
 	#superclass : 'DragonErrorSlot',
-	#category : 'Dragon',
-	#package : 'Dragon'
+	#category : 'Dragon-Model',
+	#package : 'Dragon',
+	#tag : 'Model'
 }

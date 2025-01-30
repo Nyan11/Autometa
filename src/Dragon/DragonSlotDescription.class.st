@@ -7,8 +7,9 @@ Class {
 		'possibleSetterSelectors',
 		'possibleGetterSelectors'
 	],
-	#category : 'Dragon',
-	#package : 'Dragon'
+	#category : 'Dragon-Model',
+	#package : 'Dragon',
+	#tag : 'Model'
 }
 
 { #category : 'as yet unclassified' }

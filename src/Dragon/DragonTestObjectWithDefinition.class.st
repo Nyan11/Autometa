@@ -4,11 +4,12 @@ Class {
 	#instVars : [
 		'slot'
 	],
-	#category : 'Dragon',
-	#package : 'Dragon'
+	#category : 'Dragon-Tests',
+	#package : 'Dragon',
+	#tag : 'Tests'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'dragon meta description' }
 DragonTestObjectWithDefinition >> dragonSlot [
 
 	<dragonDescription>
@@ -20,13 +21,13 @@ DragonTestObjectWithDefinition >> dragonSlot [
 		  yourself
 ]
 
-{ #category : 'accessing' }
+{ #category : 'as yet unclassified' }
 DragonTestObjectWithDefinition >> slot [
 
 	^ slot
 ]
 
-{ #category : 'accessing' }
+{ #category : 'as yet unclassified' }
 DragonTestObjectWithDefinition >> slot: anObject [
 
 	slot := anObject

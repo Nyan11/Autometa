@@ -2,21 +2,56 @@ Class {
 	#name : 'DragonDescriptionBuilder',
 	#superclass : 'Object',
 	#instVars : [
-		'classToGenerate'
+		'classToGenerate',
+		'packageToGenerate'
 	],
-	#category : 'Dragon',
-	#package : 'Dragon'
+	#category : 'Dragon-Model',
+	#package : 'Dragon',
+	#tag : 'Model'
 }
 
 { #category : 'building' }
 DragonDescriptionBuilder >> build [
 
-	(self classToGenerate withAllSuperclasses difference: { Object . ProtoObject }) do: [ :cls |
-		self buildFor: cls ]
+	(self classToGenerate withAllSuperclasses difference: {
+			 Object.
+			 ProtoObject }) do: [ :cls |
+		self buildSlotsFor: cls.
+		self buildAccessorsFor: cls ]
 ]
 
 { #category : 'building' }
-DragonDescriptionBuilder >> buildFor: aClass [
+DragonDescriptionBuilder >> buildAccessorsFor: aClass [
+
+	| allInstances allZeroArgMethod allOneArgMethod allGetterWithAssociatedMutator |
+	"We check for each class all instances and subinstances that could contains the value for each slot."
+	allInstances := aClass withAllSubclasses flatCollect: #allInstances.
+	allZeroArgMethod := aClass methods
+		                    select: [ :m | m numArgs = 0 ]
+		                    thenCollect: #selector.
+	allOneArgMethod := aClass methods
+		                   select: [ :m | m numArgs = 1 ]
+		                   thenCollect: #selector.
+	allGetterWithAssociatedMutator := allZeroArgMethod select: [ :getter |
+		                                  allOneArgMethod anySatisfy: [
+			                                  :setter |
+			                                  setter = getter asMutator ] ].
+	allGetterWithAssociatedMutator do: [ :selector |
+		| allValues allValueTypes description |
+		allValues := allInstances collect: [ :inst | inst perform: selector ].
+		allValueTypes := (allValues collect: #class) asSet.
+
+		description := DragonSlotDescription new
+			               slot: selector;
+			               possibleGetterSelectors: { selector };
+			               possibleSetterSelectors: { selector asMutator };
+			               knownTypeValues: allValueTypes;
+			               yourself.
+		self installDragonDescription: description ]
+]
+
+{ #category : 'building' }
+DragonDescriptionBuilder >> buildSlotsFor: aClass [
 
 	| allInstances |
 	"We check for each class all instances and subinstances that could contains the value for each slot."
@@ -48,7 +83,7 @@ DragonDescriptionBuilder >> buildFor: aClass [
 			               possibleGetterSelectors: possibleGetterSelectors;
 			               knownTypeValues: allValueTypes;
 			               yourself.
-		description installDragonDescriptionOn: aClass ]
+		self installDragonDescription: description ]
 ]
 
 { #category : 'accessing' }
@@ -60,4 +95,53 @@ DragonDescriptionBuilder >> classToGenerate [
 DragonDescriptionBuilder >> classToGenerate: aClass [
 
 	classToGenerate := aClass 
+]
+
+{ #category : 'as yet unclassified' }
+DragonDescriptionBuilder >> installDragonDescription: aDragonSlotDescription [
+
+	| methodSelector methodString knownTypeValuesString possibleGetterSelectorsString possibleSetterSelectorsString protocol |
+	self classToGenerate dragonInstanceDescription
+		slotDescriptionNamed: aDragonSlotDescription slot
+		ifFound: [ :description |
+			aDragonSlotDescription combineWithSlotDescription: description ].
+
+	methodString := 'dragon<1s><r><r><t>%<dragonDescription><r><t>^ DragonSlotDescription new slot: #<2s>; knownTypeValues: { <3s> }; possibleGetterSelectors: { <4s> }; possibleSetterSelectors: { <5s> }; yourself'.
+
+	knownTypeValuesString := String streamContents: [ :s |
+		                         aDragonSlotDescription knownTypeValues
+			                         do: [ :each | s << each name ]
+			                         separatedBy: [ s << ' . ' ] ].
+	possibleGetterSelectorsString := String streamContents: [ :s |
+		                         aDragonSlotDescription possibleGetterSelectors
+			                         do: [ :each | s << '#' << each ]
+			                         separatedBy: [ s << ' . ' ] ].
+	possibleSetterSelectorsString := String streamContents: [ :s |
+		                         aDragonSlotDescription possibleSetterSelectors
+			                         do: [ :each | s << '#' << each ]
+			                         separatedBy: [ s << ' . ' ] ].
+
+	methodSelector := self classToGenerate compile:
+		                  (methodString expandMacrosWithArguments: {
+				                   aDragonSlotDescription slot capitalized.
+				                   aDragonSlotDescription slot.
+				                   knownTypeValuesString.
+				                   possibleGetterSelectorsString.
+				                   possibleSetterSelectorsString }).
+	self packageToGenerate
+		ifNil: [ protocol := 'dragon meta description' ]
+		ifNotNil: [ protocol := '*' , self packageToGenerate name ].
+	(self classToGenerate methodNamed: methodSelector) protocol: protocol
+]
+
+{ #category : 'accessing' }
+DragonDescriptionBuilder >> packageToGenerate [
+
+	^ packageToGenerate
+]
+
+{ #category : 'accessing' }
+DragonDescriptionBuilder >> packageToGenerate: anObject [
+
+	packageToGenerate := anObject
 ]

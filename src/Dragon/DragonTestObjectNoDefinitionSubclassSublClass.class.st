@@ -4,8 +4,9 @@ Class {
 	#instVars : [
 		'subClassSubclassSlot'
 	],
-	#category : 'Dragon',
-	#package : 'Dragon'
+	#category : 'Dragon-Tests',
+	#package : 'Dragon',
+	#tag : 'Tests'
 }
 
 { #category : 'accessing' }

@@ -1,8 +1,9 @@
 Class {
 	#name : 'DragonSlotDescriptionTest',
 	#superclass : 'TestCase',
-	#category : 'Dragon',
-	#package : 'Dragon'
+	#category : 'Dragon-Tests',
+	#package : 'Dragon',
+	#tag : 'Tests'
 }
 
 { #category : 'running' }
@@ -12,6 +13,7 @@ DragonSlotDescriptionTest >> tearDown [
 	DragonTestObjectNoDefinition removeDragonDescription.
 	DragonTestObjectNoDefinitionSubclass removeDragonDescription.
 	DragonTestObjectNoDefinitionSubclassSublClass removeDragonDescription.
+	DragonTestObjectWithDefinitionButNoSlot removeSelector: #dragonTest.
 	DragonTestObjectWithDefinition compile: 'dragonSlot
 
 	<dragonDescription>
@@ -245,4 +247,36 @@ DragonSlotDescriptionTest >> testInstallDragonDescriptionOn5 [
 	self assertCollection: descriptionSlot possibleGetterSelectors includesAll: { #hello . #slot }.
 	self assert: descriptionSlot possibleSetterSelectors size equals: 2.
 	self assertCollection: descriptionSlot possibleSetterSelectors includesAll: { #hello: . #slot: }.
+]
+
+{ #category : 'tests' }
+DragonSlotDescriptionTest >> testInstallDragonDescriptionOn6 [
+
+	| object1 descriptionSlot |
+	object1 := DragonTestObjectWithDefinitionButNoSlot new.
+
+	self
+		assert: object1 dragonDescription slotDescriptions size
+		equals: 0.
+
+	object1 generateDragonDescription.
+
+	self
+		assert: object1 dragonDescription slotDescriptions size
+		equals: 1.
+	descriptionSlot := object1 dragonDescription slotDescriptionNamed:
+		                   #test.
+	self assert: descriptionSlot knownTypeValues size equals: 1.
+	self
+		assertCollection: descriptionSlot knownTypeValues
+		includesAll: {
+				UndefinedObject }.
+	self assert: descriptionSlot possibleGetterSelectors size equals: 1.
+	self
+		assertCollection: descriptionSlot possibleGetterSelectors
+		includesAll: { #test }.
+	self assert: descriptionSlot possibleSetterSelectors size equals: 1.
+	self
+		assertCollection: descriptionSlot possibleSetterSelectors
+		includesAll: { #test: }
 ]

@@ -1,6 +1,7 @@
 Class {
 	#name : 'DragonError',
 	#superclass : 'Error',
-	#category : 'Dragon',
-	#package : 'Dragon'
+	#category : 'Dragon-Model',
+	#package : 'Dragon',
+	#tag : 'Model'
 }

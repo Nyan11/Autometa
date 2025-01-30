@@ -5,8 +5,9 @@ Class {
 		'objectClass',
 		'slotName'
 	],
-	#category : 'Dragon',
-	#package : 'Dragon'
+	#category : 'Dragon-Model',
+	#package : 'Dragon',
+	#tag : 'Model'
 }
 
 { #category : 'accessing' }

@@ -1,8 +1,9 @@
 Class {
 	#name : 'DragonDescriptionTest',
 	#superclass : 'TestCase',
-	#category : 'Dragon',
-	#package : 'Dragon'
+	#category : 'Dragon-Tests',
+	#package : 'Dragon',
+	#tag : 'Tests'
 }
 
 { #category : 'tests' }

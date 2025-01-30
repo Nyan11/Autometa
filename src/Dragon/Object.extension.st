@@ -20,8 +20,16 @@ Object class >> dragonInstanceDescription [
 { #category : '*Dragon' }
 Object >> generateDragonDescription [
 
-	^ DragonDescriptionBuilder new classToGenerate: self class; build.
-	
+	^ self generateDragonDescriptionInPackage: nil
+]
+
+{ #category : '*Dragon' }
+Object >> generateDragonDescriptionInPackage: aPackage [
+
+	^ DragonDescriptionBuilder new
+		  classToGenerate: self class;
+		  packageToGenerate: aPackage;
+		  build
 ]
 
 { #category : '*Dragon' }

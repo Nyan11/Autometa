@@ -5,8 +5,9 @@ Class {
 		'name',
 		'otherSlot'
 	],
-	#category : 'Dragon',
-	#package : 'Dragon'
+	#category : 'Dragon-Tests',
+	#package : 'Dragon',
+	#tag : 'Tests'
 }
 
 { #category : 'as yet unclassified' }
