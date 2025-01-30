@@ -2,8 +2,9 @@ Class {
 	#name : 'DragonDescriptionBuilder',
 	#superclass : 'Object',
 	#instVars : [
-		'classToGenerate',
-		'packageToGenerate'
+		'classesToGenerate',
+		'packageToGenerate',
+		'verboseLevel'
 	],
 	#category : 'Dragon-Model',
 	#package : 'Dragon',
@@ -13,31 +14,37 @@ Class {
 { #category : 'building' }
 DragonDescriptionBuilder >> build [
 
-	(self classToGenerate withAllSuperclasses difference: {
-			 Object.
-			 ProtoObject }) do: [ :cls |
-		self buildSlotsFor: cls.
-		self buildAccessorsFor: cls ]
+	| allClassesToDo |
+	allClassesToDo := (self classesToGenerate flatCollect:
+		                   #withAllSuperclasses) asSet difference: {
+			                  Object.
+			                  ProtoObject }.
+	self verboseLevel startBuilding: allClassesToDo.
+	allClassesToDo do: [ :cls | "self buildSlotsFor: cls."
+		self verboseLevel startClass: cls.
+		self buildAccessorsFor: cls.
+		self verboseLevel endClass: cls ].
+	self verboseLevel endBuilding
 ]
 
-{ #category : 'building' }
-DragonDescriptionBuilder >> buildAccessorsDescriptionForSelector: selector andInstances: allInstances [
+{ #category : 'as yet unclassified' }
+DragonDescriptionBuilder >> buildAccessorsDescriptionForSelector: aSelector andInstances: aCollectionOfObject andClass: aClass [
 
 	| allValues allValueTypes description |
-	allValues := allInstances collect: [ :inst |
-		             [ inst perform: selector ]
+	allValues := aCollectionOfObject collect: [ :inst |
+		             [ inst perform: aSelector ]
 			             on: Error
 			             do: [ ^ self ] ].
 	allValueTypes := self reduceAllValuesToTypeValues: allValues.
 
 	description := DragonSlotDescription new
-		               name: selector;
-		               possibleGetterSelectors: { selector };
-		               possibleSetterSelectors: { selector asMutator };
+		               name: aSelector;
+		               possibleGetterSelectors: { aSelector };
+		               possibleSetterSelectors: { aSelector asMutator };
 		               knownTypeValues: allValueTypes;
 		               yourself.
 
-	self installDragonDescription: description
+	self installDragonDescription: description onClass: aClass
 ]
 
 { #category : 'building' }
@@ -59,8 +66,8 @@ DragonDescriptionBuilder >> buildAccessorsFor: aClass [
 	allGetterWithAssociatedMutator do: [ :selector |
 		self
 			buildAccessorsDescriptionForSelector: selector
-			andInstances: allInstances.
-		 ]
+			andInstances: allInstances
+			andClass: aClass ]
 ]
 
 { #category : 'building' }
@@ -99,15 +106,22 @@ DragonDescriptionBuilder >> buildSlotsFor: aClass [
 		self installDragonDescription: description ]
 ]
 
-{ #category : 'accessing' }
-DragonDescriptionBuilder >> classToGenerate [
-	^ classToGenerate
-]
-
 { #category : 'as yet unclassified' }
 DragonDescriptionBuilder >> classToGenerate: aClass [
 
-	classToGenerate := aClass 
+	classesToGenerate := { aClass }
+]
+
+{ #category : 'accessing' }
+DragonDescriptionBuilder >> classesToGenerate [
+
+	^ classesToGenerate
+]
+
+{ #category : 'accessing' }
+DragonDescriptionBuilder >> classesToGenerate: aCollection [
+
+	classesToGenerate := aCollection
 ]
 
 { #category : 'as yet unclassified' }
@@ -133,11 +147,19 @@ DragonDescriptionBuilder >> commonSuperClassExceptObjectBetween: aClass1 and: aC
 	^ clazz
 ]
 
+{ #category : 'building' }
+DragonDescriptionBuilder >> initialize [
+
+
+	super initialize .
+	verboseLevel := DragonNoVerboseLevel new.
+]
+
 { #category : 'as yet unclassified' }
-DragonDescriptionBuilder >> installDragonDescription: aDragonSlotDescription [
+DragonDescriptionBuilder >> installDragonDescription: aDragonSlotDescription onClass: aClass [
 
 	| methodSelector methodString knownTypeValuesString possibleGetterSelectorsString possibleSetterSelectorsString protocol |
-	self classToGenerate dragonInstanceDescription
+	aClass dragonInstanceDescription
 		slotDescriptionNamed: aDragonSlotDescription name
 		ifFound: [ :description |
 			aDragonSlotDescription combineWithSlotDescription: description ].
@@ -161,7 +183,7 @@ DragonDescriptionBuilder >> installDragonDescription: aDragonSlotDescription [
 			                                 do: [ :each | s << '#' << each ]
 			                                 separatedBy: [ s << ' . ' ] ].
 
-	methodSelector := self classToGenerate compile:
+	methodSelector := aClass compile:
 		                  (methodString expandMacrosWithArguments: {
 				                   aDragonSlotDescription name capitalized.
 				                   aDragonSlotDescription name.
@@ -171,7 +193,7 @@ DragonDescriptionBuilder >> installDragonDescription: aDragonSlotDescription [
 	self packageToGenerate
 		ifNil: [ protocol := 'dragon meta description' ]
 		ifNotNil: [ protocol := '*' , self packageToGenerate name ].
-	(self classToGenerate methodNamed: methodSelector) protocol: protocol
+	(aClass methodNamed: methodSelector) protocol: protocol
 ]
 
 { #category : 'accessing' }
@@ -210,4 +232,16 @@ DragonDescriptionBuilder >> reduceAllValuesToTypeValues: aCollectionOfObjects [
 	| allClasses |
 	allClasses := (aCollectionOfObjects collect: #class) asSet.
 	^ self reduceAllTypeValues: allClasses
+]
+
+{ #category : 'accessing' }
+DragonDescriptionBuilder >> verboseLevel [
+
+	^ verboseLevel
+]
+
+{ #category : 'accessing' }
+DragonDescriptionBuilder >> verboseLevel: anObject [
+
+	verboseLevel := anObject
 ]

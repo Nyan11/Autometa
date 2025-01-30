@@ -1,9 +1,20 @@
 Extension { #name : 'Object' }
 
 { #category : '*Dragon' }
-Object >> dragonDescription [
+Object class >> dragonFullDescription [
 
-	^ self class dragonInstanceDescription
+	| description |
+	description := DragonDescription new objectClass: self.
+	description slotDescriptions:
+		((Pragma allNamed: #dragonDescription from: self to: Object)
+			 collect: [ :pragma | pragma method valueWithReceiver: nil ]).
+	^ description
+]
+
+{ #category : '*Dragon' }
+Object >> dragonFullDescription [
+
+	^ self class dragonFullDescription
 ]
 
 { #category : '*Dragon' }
@@ -12,9 +23,15 @@ Object class >> dragonInstanceDescription [
 	| description |
 	description := DragonDescription new objectClass: self.
 	description slotDescriptions:
-		((Pragma allNamed: #dragonDescription from: self to: Object)
-			 collect: [ :pragma | pragma method valueWithReceiver: nil ]).
+		((Pragma allNamed: #dragonDescription from: self to: self) collect: [ :pragma |
+			 pragma method valueWithReceiver: nil ]).
 	^ description
+]
+
+{ #category : '*Dragon' }
+Object >> dragonInstanceDescription [
+
+	^ self class dragonInstanceDescription
 ]
 
 { #category : '*Dragon' }
