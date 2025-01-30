@@ -29,7 +29,15 @@ DragonGenerateDescriptionTest >> testGenerateDragonDescription1 [
 	self
 		assert: (object1 dragonDescription slotDescriptionNamed: #slot)
 				knownTypeValues
-		equals: { ByteString }
+		equals: { ByteString }.
+	self
+		assert: (object1 dragonDescription slotDescriptionNamed: #slot)
+				possibleSetterSelectors
+		equals: { #slot: }.
+	self
+		assert: (object1 dragonDescription slotDescriptionNamed: #slot)
+				possibleGetterSelectors
+		equals: { #slot }
 ]
 
 { #category : 'tests' }
@@ -93,6 +101,14 @@ DragonGenerateDescriptionTest >> testGenerateDragonDescription4 [
 		equals: { ByteString }.
 	self
 		assert: (object1 dragonDescription slotDescriptionNamed: #slot)
+				possibleSetterSelectors
+		equals: { #slot: }.
+	self
+		assert: (object1 dragonDescription slotDescriptionNamed: #subclassSlot)
+				possibleSetterSelectors
+		equals: { #subclassSlot: }.
+	self
+		assert: (object1 dragonDescription slotDescriptionNamed: #subclassSlot)
 				knownTypeValues
-		equals: { ByteString }
+		equals: { SmallInteger }.
 ]

@@ -3,7 +3,9 @@ Class {
 	#superclass : 'Object',
 	#instVars : [
 		'slot',
-		'knownTypeValues'
+		'knownTypeValues',
+		'possibleSetterSelectors',
+		'possibleGetterSelectors'
 	],
 	#category : 'Dragon',
 	#package : 'Dragon'
@@ -12,17 +14,43 @@ Class {
 { #category : 'as yet unclassified' }
 DragonSlotDescription >> installDragonDescriptionOn: aClass [
 
-	| methodString knownTypeValuesString |
-	methodString := 'dragon<1s><r><r><t>%<dragonDescription><r><t>^ DragonSlotDescription new slot: #<2s>; knownTypeValues: { <3s> }; yourself'.
+	| methodSelector methodString knownTypeValuesString possibleGetterSelectorsString possibleSetterSelectorsString |
+	methodString := 'dragon<1s><r><r><t>%<dragonDescription><r><t>^ DragonSlotDescription new slot: #<2s>; knownTypeValues: { <3s> }; possibleGetterSelectors: { <4s> }; possibleSetterSelectors: { <5s> }; yourself'.
+
 	knownTypeValuesString := ''.
 	self knownTypeValues
 		do: [ :class |
 			knownTypeValuesString := knownTypeValuesString , class name ]
-		separatedBy: [ knownTypeValuesString := knownTypeValuesString , '.' ].
-	aClass compile: (methodString
-			 expandMacrosWith: self slot capitalized
-			 with: self slot
-			 with: knownTypeValuesString)
+		separatedBy: [
+		knownTypeValuesString := knownTypeValuesString , ' . ' ].
+
+	possibleGetterSelectorsString := ''.
+	self possibleGetterSelectors
+		do: [ :getter |
+			possibleGetterSelectorsString := possibleGetterSelectorsString
+			                                 , '#' , getter ]
+		separatedBy: [
+			possibleGetterSelectorsString := possibleGetterSelectorsString
+			                                 , ' . ' ].
+
+	possibleSetterSelectorsString := ''.
+	self possibleSetterSelectors
+		do: [ :setter |
+			possibleSetterSelectorsString := possibleSetterSelectorsString
+			                                 , '#' , setter ]
+		separatedBy: [
+			possibleSetterSelectorsString := possibleSetterSelectorsString
+			                                 , ' . ' ].
+
+
+	methodSelector := aClass compile: (methodString expandMacrosWithArguments: {
+				 self slot capitalized.
+				 self slot.
+				 knownTypeValuesString.
+				 possibleGetterSelectorsString.
+				 possibleSetterSelectorsString }).
+	(aClass methodNamed: methodSelector) protocol: '*Dragon'.
+
 ]
 
 { #category : 'accessing' }
@@ -35,6 +63,28 @@ DragonSlotDescription >> knownTypeValues [
 DragonSlotDescription >> knownTypeValues: anObject [
 
 	knownTypeValues := anObject
+]
+
+{ #category : 'accessing' }
+DragonSlotDescription >> possibleGetterSelectors [
+
+	^ possibleGetterSelectors
+]
+
+{ #category : 'as yet unclassified' }
+DragonSlotDescription >> possibleGetterSelectors: aCollection [
+
+	possibleGetterSelectors := aCollection
+]
+
+{ #category : 'accessing' }
+DragonSlotDescription >> possibleSetterSelectors [
+	^ possibleSetterSelectors
+]
+
+{ #category : 'as yet unclassified' }
+DragonSlotDescription >> possibleSetterSelectors: aCollection [ 
+	possibleSetterSelectors := aCollection
 ]
 
 { #category : 'accessing' }
