@@ -280,3 +280,26 @@ DragonSlotDescriptionTest >> testInstallDragonDescriptionOn6 [
 		assertCollection: descriptionSlot possibleSetterSelectors
 		includesAll: { #test: }
 ]
+
+{ #category : 'tests' }
+DragonSlotDescriptionTest >> testInstallDragonDescriptionOn7 [
+
+	| object1 object2 |
+	object1 := DragonTestObjectNoDefinition new
+		           slot: 'Hello World !';
+		           yourself.
+	object2 := DragonTestObjectNoDefinition new
+		           slot: #test;
+		           yourself.
+	self assertEmpty: object1 dragonDescription slotDescriptions.
+	object1 generateDragonDescription.
+	self
+		assert: object1 dragonDescription slotDescriptions size
+		equals: 1.
+	self
+		assertCollection:
+			(object1 dragonDescription slotDescriptionNamed: #slot)
+				knownTypeValues
+		includesAll: {
+				String }
+]

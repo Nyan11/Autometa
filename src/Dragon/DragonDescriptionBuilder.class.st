@@ -28,8 +28,7 @@ DragonDescriptionBuilder >> buildAccessorsDescriptionForSelector: selector andIn
 		             [ inst perform: selector ]
 			             on: Error
 			             do: [ ^ self ] ].
-
-	allValueTypes := (allValues collect: #class) asSet.
+	allValueTypes := self reduceAllValuesToTypeValues: allValues.
 
 	description := DragonSlotDescription new
 		               slot: selector;
@@ -38,7 +37,7 @@ DragonDescriptionBuilder >> buildAccessorsDescriptionForSelector: selector andIn
 		               knownTypeValues: allValueTypes;
 		               yourself.
 
-	self installDragonDescription: description
+	self installDragonDescription: description.
 ]
 
 { #category : 'building' }
@@ -73,7 +72,7 @@ DragonDescriptionBuilder >> buildSlotsFor: aClass [
 	aClass slots do: [ :slot |
 		| allValues allValueTypes description matcherSetter matcherGetter possibleSetterSelectors possibleGetterSelectors |
 		allValues := allInstances collect: [ :inst | slot read: inst ].
-		allValueTypes := (allValues collect: #class) asSet.
+		allValueTypes := self reduceAllValuesToTypeValues: allValues.
 		"We need to find all possible setters for each slot.
 		We recover all method that are using this slot and select only the one with one argument."
 		matcherSetter := RBParseTreeSearcher setterMethod: slot name.
@@ -112,6 +111,29 @@ DragonDescriptionBuilder >> classToGenerate: aClass [
 ]
 
 { #category : 'as yet unclassified' }
+DragonDescriptionBuilder >> commonSuperClassBetween: aClass1 and: aClass2 [
+
+	| class1Collection class2Collection |
+	aClass1 = aClass2 ifTrue: [ ^ aClass1 ].
+	((class1Collection := aClass1 withAllSuperclasses) includes: aClass2)
+		ifTrue: [ ^ aClass2 ].
+	((class2Collection := aClass2 withAllSuperclasses) includes: aClass1)
+		ifTrue: [ ^ aClass1 ].
+	class1Collection do: [ :each | (class2Collection includes: each) ifTrue: [ ^ each ] ].
+	^ Object
+]
+
+{ #category : 'as yet unclassified' }
+DragonDescriptionBuilder >> commonSuperClassExceptObjectBetween: aClass1 and: aClass2 [
+
+	| clazz |
+	"Return the common super class between the 2 classes. If it is Object return nil"
+	clazz := self commonSuperClassBetween: aClass1 and: aClass2.
+	clazz = Object ifTrue: [ ^ nil ].
+	^ clazz
+]
+
+{ #category : 'as yet unclassified' }
 DragonDescriptionBuilder >> installDragonDescription: aDragonSlotDescription [
 
 	| methodSelector methodString knownTypeValuesString possibleGetterSelectorsString possibleSetterSelectorsString protocol |
@@ -119,6 +141,8 @@ DragonDescriptionBuilder >> installDragonDescription: aDragonSlotDescription [
 		slotDescriptionNamed: aDragonSlotDescription slot
 		ifFound: [ :description |
 			aDragonSlotDescription combineWithSlotDescription: description ].
+	aDragonSlotDescription knownTypeValues:
+		(self reduceAllTypeValues: aDragonSlotDescription knownTypeValues).
 
 	methodString := 'dragon<1s><r><r><t>%<dragonDescription><r><t>^ DragonSlotDescription new slot: #<2s>; knownTypeValues: { <3s> }; possibleGetterSelectors: { <4s> }; possibleSetterSelectors: { <5s> }; yourself'.
 
@@ -127,13 +151,15 @@ DragonDescriptionBuilder >> installDragonDescription: aDragonSlotDescription [
 			                         do: [ :each | s << each name ]
 			                         separatedBy: [ s << ' . ' ] ].
 	possibleGetterSelectorsString := String streamContents: [ :s |
-		                         aDragonSlotDescription possibleGetterSelectors
-			                         do: [ :each | s << '#' << each ]
-			                         separatedBy: [ s << ' . ' ] ].
+		                                 aDragonSlotDescription
+			                                 possibleGetterSelectors
+			                                 do: [ :each | s << '#' << each ]
+			                                 separatedBy: [ s << ' . ' ] ].
 	possibleSetterSelectorsString := String streamContents: [ :s |
-		                         aDragonSlotDescription possibleSetterSelectors
-			                         do: [ :each | s << '#' << each ]
-			                         separatedBy: [ s << ' . ' ] ].
+		                                 aDragonSlotDescription
+			                                 possibleSetterSelectors
+			                                 do: [ :each | s << '#' << each ]
+			                                 separatedBy: [ s << ' . ' ] ].
 
 	methodSelector := self classToGenerate compile:
 		                  (methodString expandMacrosWithArguments: {
@@ -158,4 +184,30 @@ DragonDescriptionBuilder >> packageToGenerate [
 DragonDescriptionBuilder >> packageToGenerate: anObject [
 
 	packageToGenerate := anObject
+]
+
+{ #category : 'as yet unclassified' }
+DragonDescriptionBuilder >> reduceAllTypeValues: aCollectionOfClass [
+
+	| refinedClasses |
+	refinedClasses := OrderedCollection new.
+	aCollectionOfClass do: [ :classToAdd |
+		refinedClasses ifEmpty: [ refinedClasses add: classToAdd ].
+		refinedClasses do: [ :refinedClass |
+			(self
+				 commonSuperClassExceptObjectBetween: classToAdd
+				 and: refinedClass)
+				ifNil: [ refinedClasses add: classToAdd ]
+				ifNotNil: [ :newClass |
+					refinedClasses remove: refinedClass.
+					refinedClasses add: newClass ] ] ].
+	^ refinedClasses asArray
+]
+
+{ #category : 'as yet unclassified' }
+DragonDescriptionBuilder >> reduceAllValuesToTypeValues: aCollectionOfObjects [
+
+	| allClasses |
+	allClasses := (aCollectionOfObjects collect: #class) asSet.
+	^ self reduceAllTypeValues: allClasses
 ]
