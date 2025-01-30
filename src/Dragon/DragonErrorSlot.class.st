@@ -1,6 +1,6 @@
 Class {
 	#name : 'DragonErrorSlot',
-	#superclass : 'Error',
+	#superclass : 'DragonError',
 	#instVars : [
 		'objectClass',
 		'slotName'
