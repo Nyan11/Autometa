@@ -46,13 +46,13 @@ DragonDescription >> slotDescriptionNamed: aString ifFound: aBlockClosureFound i
 
 	| possibleSolutions |
 	possibleSolutions := self slotDescriptions select: [ :desc |
-		                     desc slot = aString ].
+		                     desc name = aString ].
 	possibleSolutions ifEmpty: [ ^ aBlockClosureNotFound value ].
 	possibleSolutions size > 1 ifTrue: [
 		^ DragonErrorMultipeSlotNamed new
-			objectClass: self objectClass;
-			slotName: aString;
-			signal ].
+			  objectClass: self objectClass;
+			  slotName: aString;
+			  signal ].
 	^ aBlockClosureFound value: possibleSolutions first
 ]
 

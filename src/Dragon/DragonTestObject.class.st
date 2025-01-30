@@ -14,7 +14,10 @@ Class {
 DragonTestObject >> dragonName [
 
 	<dragonDescription>
-	^ DragonSlotDescription new slot: #name; knownTypeValues: { String }; yourself
+	^ DragonSlotDescription new
+		  name: #name;
+		  knownTypeValues: { String };
+		  yourself
 ]
 
 { #category : 'as yet unclassified' }
@@ -22,7 +25,7 @@ DragonTestObject >> dragonOtherSlot [
 
 	<dragonDescription>
 	^ DragonSlotDescription new
-		  slot: #otherSlot;
+		  name: #otherSlot;
 		  knownTypeValues: { UndefinedObject };
 		  yourself
 ]
@@ -32,7 +35,7 @@ DragonTestObject >> dragonOtherSlot2 [
 
 	<dragonDescription>
 	^ DragonSlotDescription new
-		  slot: #otherSlot;
+		  name: #otherSlot;
 		  knownTypeValues: { UndefinedObject };
 		  yourself
 ]

@@ -14,7 +14,7 @@ DragonTestObjectWithDefinition >> dragonSlot [
 
 	<dragonDescription>
 	^ DragonSlotDescription new
-		  slot: #slot;
+		  name: #slot;
 		  knownTypeValues: { String };
 		  possibleGetterSelectors: { #hello };
 		  possibleSetterSelectors: { #hello: };

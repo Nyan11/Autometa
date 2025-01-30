@@ -18,7 +18,7 @@ DragonDescriptionTest >> testDragonDescription1 [
 	self
 		assert:
 			(DragonTestObject new dragonDescription slotDescriptionNamed: #name)
-				slot
+				name
 		equals: #name.
 	self
 		assert:

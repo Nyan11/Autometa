@@ -31,13 +31,13 @@ DragonDescriptionBuilder >> buildAccessorsDescriptionForSelector: selector andIn
 	allValueTypes := self reduceAllValuesToTypeValues: allValues.
 
 	description := DragonSlotDescription new
-		               slot: selector;
+		               name: selector;
 		               possibleGetterSelectors: { selector };
 		               possibleSetterSelectors: { selector asMutator };
 		               knownTypeValues: allValueTypes;
 		               yourself.
 
-	self installDragonDescription: description.
+	self installDragonDescription: description
 ]
 
 { #category : 'building' }
@@ -91,7 +91,7 @@ DragonDescriptionBuilder >> buildSlotsFor: aClass [
 				matcherGetter answer ifNotNil: [
 					possibleGetterSelectors add: method selector ] ] ].
 		description := DragonSlotDescription new
-			               slot: slot name;
+			               name: slot name;
 			               possibleSetterSelectors: possibleSetterSelectors;
 			               possibleGetterSelectors: possibleGetterSelectors;
 			               knownTypeValues: allValueTypes;
@@ -138,13 +138,13 @@ DragonDescriptionBuilder >> installDragonDescription: aDragonSlotDescription [
 
 	| methodSelector methodString knownTypeValuesString possibleGetterSelectorsString possibleSetterSelectorsString protocol |
 	self classToGenerate dragonInstanceDescription
-		slotDescriptionNamed: aDragonSlotDescription slot
+		slotDescriptionNamed: aDragonSlotDescription name
 		ifFound: [ :description |
 			aDragonSlotDescription combineWithSlotDescription: description ].
 	aDragonSlotDescription knownTypeValues:
 		(self reduceAllTypeValues: aDragonSlotDescription knownTypeValues).
 
-	methodString := 'dragon<1s><r><r><t>%<dragonDescription><r><t>^ DragonSlotDescription new slot: #<2s>; knownTypeValues: { <3s> }; possibleGetterSelectors: { <4s> }; possibleSetterSelectors: { <5s> }; yourself'.
+	methodString := 'dragon<1s><r><r><t>%<dragonDescription><r><t>^ DragonSlotDescription new name: #<2s>; knownTypeValues: { <3s> }; possibleGetterSelectors: { <4s> }; possibleSetterSelectors: { <5s> }; yourself'.
 
 	knownTypeValuesString := String streamContents: [ :s |
 		                         aDragonSlotDescription knownTypeValues
@@ -163,8 +163,8 @@ DragonDescriptionBuilder >> installDragonDescription: aDragonSlotDescription [
 
 	methodSelector := self classToGenerate compile:
 		                  (methodString expandMacrosWithArguments: {
-				                   aDragonSlotDescription slot capitalized.
-				                   aDragonSlotDescription slot.
+				                   aDragonSlotDescription name capitalized.
+				                   aDragonSlotDescription name.
 				                   knownTypeValuesString.
 				                   possibleGetterSelectorsString.
 				                   possibleSetterSelectorsString }).

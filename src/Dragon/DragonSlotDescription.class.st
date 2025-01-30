@@ -2,7 +2,7 @@ Class {
 	#name : 'DragonSlotDescription',
 	#superclass : 'Object',
 	#instVars : [
-		'slot',
+		'name',
 		'knownTypeValues',
 		'possibleSetterSelectors',
 		'possibleGetterSelectors'
@@ -15,10 +15,15 @@ Class {
 { #category : 'as yet unclassified' }
 DragonSlotDescription >> combineWithSlotDescription: aDragonSlotDescription [
 
-	self slot = aDragonSlotDescription slot ifFalse: [ ^ DragonErrorCombineDifferentSlotDescription new signal ].
-	self knownTypeValues: (self knownTypeValues , aDragonSlotDescription knownTypeValues) asSet asArray.
-	self possibleGetterSelectors: (self possibleGetterSelectors , aDragonSlotDescription possibleGetterSelectors) asSet asArray.
-	self possibleSetterSelectors: (self possibleSetterSelectors , aDragonSlotDescription possibleSetterSelectors) asSet asArray
+	self name = aDragonSlotDescription name ifFalse: [
+		^ DragonErrorCombineDifferentSlotDescription new signal ].
+	self knownTypeValues:
+		(self knownTypeValues , aDragonSlotDescription knownTypeValues)
+			asSet asArray.
+	self possibleGetterSelectors: (self possibleGetterSelectors
+		 , aDragonSlotDescription possibleGetterSelectors) asSet asArray.
+	self possibleSetterSelectors: (self possibleSetterSelectors
+		 , aDragonSlotDescription possibleSetterSelectors) asSet asArray
 ]
 
 { #category : 'initialization' }
@@ -35,11 +40,11 @@ DragonSlotDescription >> installDragonDescriptionOn: aClass [
 
 	| methodSelector methodString knownTypeValuesString possibleGetterSelectorsString possibleSetterSelectorsString |
 	aClass dragonInstanceDescription
-		slotDescriptionNamed: self slot
+		slotDescriptionNamed: self name
 		ifFound: [ :description |
 		self combineWithSlotDescription: description ].
 
-	methodString := 'dragon<1s><r><r><t>%<dragonDescription><r><t>^ DragonSlotDescription new slot: #<2s>; knownTypeValues: { <3s> }; possibleGetterSelectors: { <4s> }; possibleSetterSelectors: { <5s> }; yourself'.
+	methodString := 'dragon<1s><r><r><t>%<dragonDescription><r><t>^ DragonSlotDescription new name: #<2s>; knownTypeValues: { <3s> }; possibleGetterSelectors: { <4s> }; possibleSetterSelectors: { <5s> }; yourself'.
 
 	knownTypeValuesString := ''.
 	self knownTypeValues
@@ -69,8 +74,8 @@ DragonSlotDescription >> installDragonDescriptionOn: aClass [
 
 	methodSelector := aClass compile:
 		                  (methodString expandMacrosWithArguments: {
-				                   self slot capitalized.
-				                   self slot.
+				                   self name capitalized.
+				                   self name.
 				                   knownTypeValuesString.
 				                   possibleGetterSelectorsString.
 				                   possibleSetterSelectorsString }).
@@ -87,6 +92,18 @@ DragonSlotDescription >> knownTypeValues [
 DragonSlotDescription >> knownTypeValues: anObject [
 
 	knownTypeValues := anObject
+]
+
+{ #category : 'accessing' }
+DragonSlotDescription >> name [
+
+	^ name
+]
+
+{ #category : 'accessing' }
+DragonSlotDescription >> name: anObject [
+
+	name := anObject
 ]
 
 { #category : 'accessing' }
@@ -109,16 +126,4 @@ DragonSlotDescription >> possibleSetterSelectors [
 { #category : 'as yet unclassified' }
 DragonSlotDescription >> possibleSetterSelectors: aCollection [ 
 	possibleSetterSelectors := aCollection
-]
-
-{ #category : 'accessing' }
-DragonSlotDescription >> slot [
-
-	^ slot
-]
-
-{ #category : 'accessing' }
-DragonSlotDescription >> slot: anObject [
-
-	slot := anObject
 ]

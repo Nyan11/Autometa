@@ -18,11 +18,12 @@ DragonSlotDescriptionTest >> tearDown [
 
 	<dragonDescription>
 	^ DragonSlotDescription new
-		  slot: #slot;
+		  name: #slot;
 		  knownTypeValues: { String };
 		  possibleGetterSelectors: { #hello };
 		  possibleSetterSelectors: { #hello: };
-		  yourself'
+		  yourself'.
+	Smalltalk garbageCollect
 ]
 
 { #category : 'tests' }
@@ -30,10 +31,10 @@ DragonSlotDescriptionTest >> testCombineWithSlotDescription1 [
 
 	| desc1 desc2 |
 	desc1 := DragonSlotDescription new
-		         slot: #hello;
+		         name: #hello;
 		         yourself.
 	desc2 := DragonSlotDescription new
-		         slot: #hello;
+		         name: #hello;
 		         yourself.
 	desc1 combineWithSlotDescription: desc2.
 	self assert: true
@@ -44,14 +45,14 @@ DragonSlotDescriptionTest >> testCombineWithSlotDescription2 [
 
 	| desc1 desc2 |
 	desc1 := DragonSlotDescription new
-		         slot: #hello;
+		         name: #hello;
 		         yourself.
 	desc2 := DragonSlotDescription new
-		         slot: #goodbye;
+		         name: #goodbye;
 		         yourself.
 	self
 		should: [ desc1 combineWithSlotDescription: desc2 ]
-		raise: DragonErrorCombineDifferentSlotDescription.
+		raise: DragonErrorCombineDifferentSlotDescription
 ]
 
 { #category : 'tests' }
@@ -59,14 +60,15 @@ DragonSlotDescriptionTest >> testCombineWithSlotDescription3 [
 
 	| desc1 desc2 |
 	desc1 := DragonSlotDescription new
-		         slot: #hello;
-		         possibleSetterSelectors: { #setter1 . #setter2 }
-		         yourself.
+		         name: #hello;
+		         possibleSetterSelectors: { #setter1. #setter2 } yourself.
 	desc2 := DragonSlotDescription new
-		         slot: #hello;
+		         name: #hello;
 		         yourself.
 	desc1 combineWithSlotDescription: desc2.
-	self assertCollection: desc1 possibleSetterSelectors includesAll: { #setter1 . #setter2 }
+	self
+		assertCollection: desc1 possibleSetterSelectors
+		includesAll: { #setter1. #setter2 }
 ]
 
 { #category : 'tests' }
@@ -74,14 +76,16 @@ DragonSlotDescriptionTest >> testCombineWithSlotDescription4 [
 
 	| desc1 desc2 |
 	desc1 := DragonSlotDescription new
-		         slot: #hello;
+		         name: #hello;
 		         yourself.
 	desc2 := DragonSlotDescription new
-		         slot: #hello;
-		         possibleSetterSelectors: { #setter1 . #setter2 };
+		         name: #hello;
+		         possibleSetterSelectors: { #setter1. #setter2 };
 		         yourself.
 	desc1 combineWithSlotDescription: desc2.
-	self assertCollection: desc1 possibleSetterSelectors includesAll: { #setter1 . #setter2 }
+	self
+		assertCollection: desc1 possibleSetterSelectors
+		includesAll: { #setter1. #setter2 }
 ]
 
 { #category : 'tests' }
@@ -89,15 +93,17 @@ DragonSlotDescriptionTest >> testCombineWithSlotDescription5 [
 
 	| desc1 desc2 |
 	desc1 := DragonSlotDescription new
-		         slot: #hello;
-		 possibleSetterSelectors: { #setter1 };
+		         name: #hello;
+		         possibleSetterSelectors: { #setter1 };
 		         yourself.
 	desc2 := DragonSlotDescription new
-		         slot: #hello;
+		         name: #hello;
 		         possibleSetterSelectors: { #setter2 };
 		         yourself.
 	desc1 combineWithSlotDescription: desc2.
-	self assertCollection: desc1 possibleSetterSelectors includesAll: { #setter1 . #setter2 }
+	self
+		assertCollection: desc1 possibleSetterSelectors
+		includesAll: { #setter1. #setter2 }
 ]
 
 { #category : 'tests' }
@@ -105,15 +111,17 @@ DragonSlotDescriptionTest >> testCombineWithSlotDescription6 [
 
 	| desc1 desc2 |
 	desc1 := DragonSlotDescription new
-		         slot: #hello;
-		 possibleSetterSelectors: { #setter1 . #setter2 };
+		         name: #hello;
+		         possibleSetterSelectors: { #setter1. #setter2 };
 		         yourself.
 	desc2 := DragonSlotDescription new
-		         slot: #hello;
-		         possibleSetterSelectors: { #setter2 . #setter3 };
+		         name: #hello;
+		         possibleSetterSelectors: { #setter2. #setter3 };
 		         yourself.
 	desc1 combineWithSlotDescription: desc2.
-	self assertCollection: desc1 possibleSetterSelectors includesAll: { #setter1 . #setter2 . #setter3 }
+	self
+		assertCollection: desc1 possibleSetterSelectors
+		includesAll: { #setter1. #setter2. #setter3 }
 ]
 
 { #category : 'tests' }
@@ -228,25 +236,45 @@ DragonSlotDescriptionTest >> testInstallDragonDescriptionOn5 [
 		           slot: 5;
 		           yourself.
 
-	self assert: object1 dragonDescription slotDescriptions size equals: 1.
-	descriptionSlot := object1 dragonDescription slotDescriptionNamed: #slot.
+	self
+		assert: object1 dragonDescription slotDescriptions size
+		equals: 1.
+	descriptionSlot := object1 dragonDescription slotDescriptionNamed:
+		                   #slot.
 	self assert: descriptionSlot knownTypeValues size equals: 1.
-	self assertCollection: descriptionSlot knownTypeValues includesAll: { String }.
+	self
+		assertCollection: descriptionSlot knownTypeValues
+		includesAll: { String }.
 	self assert: descriptionSlot possibleGetterSelectors size equals: 1.
-	self assertCollection: descriptionSlot possibleGetterSelectors includesAll: { #hello }.
+	self
+		assertCollection: descriptionSlot possibleGetterSelectors
+		includesAll: { #hello }.
 	self assert: descriptionSlot possibleSetterSelectors size equals: 1.
-	self assertCollection: descriptionSlot possibleSetterSelectors includesAll: { #hello: }.
-	
+	self
+		assertCollection: descriptionSlot possibleSetterSelectors
+		includesAll: { #hello: }.
+
 	object1 generateDragonDescription.
-	
-	self assert: object1 dragonDescription slotDescriptions size equals: 1.
-	descriptionSlot := object1 dragonDescription slotDescriptionNamed: #slot.
+
+	self
+		assert: object1 dragonDescription slotDescriptions size
+		equals: 1.
+	descriptionSlot := object1 dragonDescription slotDescriptionNamed:
+		                   #slot.
 	self assert: descriptionSlot knownTypeValues size equals: 2.
-	self assertCollection: descriptionSlot knownTypeValues includesAll: { String . SmallInteger }.
+	self
+		assertCollection: descriptionSlot knownTypeValues
+		includesAll: {
+				String.
+				SmallInteger }.
 	self assert: descriptionSlot possibleGetterSelectors size equals: 2.
-	self assertCollection: descriptionSlot possibleGetterSelectors includesAll: { #hello . #slot }.
+	self
+		assertCollection: descriptionSlot possibleGetterSelectors
+		includesAll: { #hello. #slot }.
 	self assert: descriptionSlot possibleSetterSelectors size equals: 2.
-	self assertCollection: descriptionSlot possibleSetterSelectors includesAll: { #hello: . #slot: }.
+	self
+		assertCollection: descriptionSlot possibleSetterSelectors
+		includesAll: { #hello:. #slot: }
 ]
 
 { #category : 'tests' }
@@ -300,6 +328,5 @@ DragonSlotDescriptionTest >> testInstallDragonDescriptionOn7 [
 		assertCollection:
 			(object1 dragonDescription slotDescriptionNamed: #slot)
 				knownTypeValues
-		includesAll: {
-				String }
+		includesAll: { String }
 ]
