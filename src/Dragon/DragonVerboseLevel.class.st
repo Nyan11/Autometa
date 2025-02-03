@@ -20,8 +20,8 @@ DragonVerboseLevel >> endBuilding [
 DragonVerboseLevel >> startBuilding: aCollection [
 
 	size := aCollection size.
-	Transcript crShow:
-		'Total number of classes: ' , size printString
+	count := 1.
+	Transcript crShow: 'Total number of classes: ' , size printString
 ]
 
 { #category : 'as yet unclassified' }

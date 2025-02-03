@@ -31,6 +31,12 @@ DragonDescriptionBuilder >> build [
 DragonDescriptionBuilder >> buildAccessorsDescriptionForSelector: aSelector andInstances: aCollectionOfObject andClass: aClass [
 
 	| allValues allValueTypes description |
+	(aClass package name beginsWith: 'Collection') ifTrue: [ ^ self ].
+	(aClass package name beginsWith: 'Display') ifTrue: [ ^ self ].
+	(aClass package name beginsWith: 'Text') ifTrue: [ ^ self ].
+	(aClass package name beginsWith: 'Graphics') ifTrue: [ ^ self ].
+	(aClass package name beginsWith: 'System') ifTrue: [ ^ self ].
+	(aClass package name beginsWith: 'Kernel') ifTrue: [ ^ self ].
 	allValues := aCollectionOfObject collect: [ :inst |
 		             [ inst perform: aSelector ]
 			             on: Error
@@ -54,10 +60,10 @@ DragonDescriptionBuilder >> buildAccessorsFor: aClass [
 	"We check for each class all instances and subinstances that could contains the value for each slot."
 	allInstances := aClass withAllSubclasses flatCollect: #allInstances.
 	allZeroArgMethod := aClass methods
-		                    select: [ :m | m numArgs = 0 ]
+		                    select: [ :m | m numArgs = 0 and: [ m protocol ~= 'private' ] ]
 		                    thenCollect: #selector.
 	allOneArgMethod := aClass methods
-		                   select: [ :m | m numArgs = 1 ]
+		                   select: [ :m | m numArgs = 1 and: [ m protocol ~= 'private' ] ]
 		                   thenCollect: #selector.
 	allGetterWithAssociatedMutator := allZeroArgMethod select: [ :getter |
 		                                  allOneArgMethod anySatisfy: [
