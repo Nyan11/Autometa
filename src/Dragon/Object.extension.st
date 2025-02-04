@@ -64,6 +64,29 @@ Object >> generateDragonDescriptionInPackage: aPackage [
 { #category : '*Dragon' }
 Object class >> removeDragonDescription [
 
+	^ self removeDragonDescriptionIf: [ :desc | true ]
+]
+
+{ #category : '*Dragon' }
+Object >> removeDragonDescription [
+
+	^ self removeDragonDescriptionIf: [ :desc | true ]
+]
+
+{ #category : '*Dragon' }
+Object class >> removeDragonDescriptionIf: aBlock [
+
+	| selectorRemoved |
+	selectorRemoved := OrderedCollection new.
 	(Pragma allNamed: #dragonDescription in: self) do: [ :pragma |
-		self removeSelector: pragma method selector ].
+		(aBlock value: (pragma method valueWithReceiver: nil)) ifTrue: [
+			self removeSelector: pragma method selector.
+			selectorRemoved add: pragma method selector ] ].
+	^ selectorRemoved asArray
+]
+
+{ #category : '*Dragon' }
+Object >> removeDragonDescriptionIf: aBlock [
+
+	^ self class removeDragonDescriptionIf: aBlock
 ]

@@ -11,12 +11,59 @@ Class {
 	#tag : 'Model'
 }
 
+{ #category : 'as yet unclassified' }
+DragonDescriptionBuilder class >> buildClassDescriptionInPackage: aClassPackage inPackage: aPackage [
+
+	self
+		buildClassDescriptions: aClassPackage classes
+		inPackage: aPackage
+		withVerboseLevel: DragonVerboseLevel new
+]
+
+{ #category : 'as yet unclassified' }
+DragonDescriptionBuilder class >> buildClassDescriptions: aCollectionOfClasses inPackage: aPackage withVerboseLevel: aDragonVerboseLevel [
+
+	| builder |
+	builder := self new
+		           packageToGenerate: aPackage;
+		           classesToGenerate: aCollectionOfClasses;
+		           verboseLevel: aDragonVerboseLevel;
+		           yourself.
+
+	[ builder build ] fork
+]
+
+{ #category : 'as yet unclassified' }
+DragonDescriptionBuilder class >> buildClassHierarchyDescription: aClass inPackage: aPackage [
+
+	self
+		buildClassDescriptions: aClass withAllSubclasses
+		inPackage: aPackage
+		withVerboseLevel: DragonVerboseLevel new
+]
+
+{ #category : 'as yet unclassified' }
+DragonDescriptionBuilder class >> removeClassDescriptionInPackage: aPackage [
+
+	aPackage classes do: [ :cls | cls removeDragonDescription ]. 
+]
+
+{ #category : 'as yet unclassified' }
+DragonDescriptionBuilder class >> removeClassDescriptionInPackage: aPackage if: aBlock [
+
+	aPackage classes do: [ :cls | cls removeDragonDescriptionIf: aBlock ]
+]
+
 { #category : 'building' }
 DragonDescriptionBuilder >> build [
 
 	| allClassesToDo |
 	allClassesToDo := (self classesToGenerate flatCollect:
 		                   #withAllSuperclasses) asSet difference: {
+			                  Object.
+			                  ProtoObject }.
+	allClassesToDo := allClassesToDo , (allClassesToDo flatCollect: #traits).
+	allClassesToDo asSet difference: {
 			                  Object.
 			                  ProtoObject }.
 	self verboseLevel startBuilding: allClassesToDo.
@@ -58,12 +105,17 @@ DragonDescriptionBuilder >> buildAccessorsFor: aClass [
 
 	| allInstances allZeroArgMethod allOneArgMethod allGetterWithAssociatedMutator |
 	"We check for each class all instances and subinstances that could contains the value for each slot."
-	allInstances := aClass withAllSubclasses flatCollect: #allInstances.
+	allInstances := aClass isTrait
+		                ifTrue: [ aClass users flatCollect: #allInstances ]
+		                ifFalse: [
+		                aClass withAllSubclasses flatCollect: #allInstances ].
 	allZeroArgMethod := aClass methods
-		                    select: [ :m | m numArgs = 0 and: [ m protocol ~= 'private' ] ]
+		                    select: [ :m |
+		                    m numArgs = 0 and: [ m protocol ~= 'private' ] ]
 		                    thenCollect: #selector.
 	allOneArgMethod := aClass methods
-		                   select: [ :m | m numArgs = 1 and: [ m protocol ~= 'private' ] ]
+		                   select: [ :m |
+		                   m numArgs = 1 and: [ m protocol ~= 'private' ] ]
 		                   thenCollect: #selector.
 	allGetterWithAssociatedMutator := allZeroArgMethod select: [ :getter |
 		                                  allOneArgMethod anySatisfy: [
@@ -167,7 +219,7 @@ DragonDescriptionBuilder >> installDragonDescription: aDragonSlotDescription onC
 	| methodSelector methodString knownTypeValuesString possibleGetterSelectorsString possibleSetterSelectorsString protocol |
 	aClass dragonInstanceDescription
 		slotDescriptionNamed: aDragonSlotDescription name
-		ifFound: [ :description |
+		ifFound: [ :description | (description knownTypeValues includesAll: aDragonSlotDescription knownTypeValues) ifTrue: [ ^ self ].
 			aDragonSlotDescription combineWithSlotDescription: description ].
 	aDragonSlotDescription knownTypeValues:
 		(self reduceAllTypeValues: aDragonSlotDescription knownTypeValues).

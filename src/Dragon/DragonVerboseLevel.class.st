@@ -17,6 +17,10 @@ DragonVerboseLevel >> endBuilding [
 ]
 
 { #category : 'as yet unclassified' }
+DragonVerboseLevel >> endClass: aClass [
+]
+
+{ #category : 'as yet unclassified' }
 DragonVerboseLevel >> startBuilding: aCollection [
 
 	size := aCollection size.
