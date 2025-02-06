@@ -13,7 +13,7 @@ Class {
 DragonTestObjectWithDefinition >> dragonSlot [
 
 	<dragonDescription>
-	^ DragonSlotDescription new
+	^ DragonPropertyDescription new
 		  name: #slot;
 		  knownTypeValues: { String };
 		  possibleGetterSelectors: { #hello };

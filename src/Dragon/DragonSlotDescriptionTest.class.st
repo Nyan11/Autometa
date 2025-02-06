@@ -30,10 +30,10 @@ DragonSlotDescriptionTest >> tearDown [
 DragonSlotDescriptionTest >> testCombineWithSlotDescription1 [
 
 	| desc1 desc2 |
-	desc1 := DragonSlotDescription new
+	desc1 := DragonPropertyDescription new
 		         name: #hello;
 		         yourself.
-	desc2 := DragonSlotDescription new
+	desc2 := DragonPropertyDescription new
 		         name: #hello;
 		         yourself.
 	desc1 combineWithSlotDescription: desc2.
@@ -44,10 +44,10 @@ DragonSlotDescriptionTest >> testCombineWithSlotDescription1 [
 DragonSlotDescriptionTest >> testCombineWithSlotDescription2 [
 
 	| desc1 desc2 |
-	desc1 := DragonSlotDescription new
+	desc1 := DragonPropertyDescription new
 		         name: #hello;
 		         yourself.
-	desc2 := DragonSlotDescription new
+	desc2 := DragonPropertyDescription new
 		         name: #goodbye;
 		         yourself.
 	self
@@ -59,10 +59,10 @@ DragonSlotDescriptionTest >> testCombineWithSlotDescription2 [
 DragonSlotDescriptionTest >> testCombineWithSlotDescription3 [
 
 	| desc1 desc2 |
-	desc1 := DragonSlotDescription new
+	desc1 := DragonPropertyDescription new
 		         name: #hello;
 		         possibleSetterSelectors: { #setter1. #setter2 } yourself.
-	desc2 := DragonSlotDescription new
+	desc2 := DragonPropertyDescription new
 		         name: #hello;
 		         yourself.
 	desc1 combineWithSlotDescription: desc2.
@@ -75,10 +75,10 @@ DragonSlotDescriptionTest >> testCombineWithSlotDescription3 [
 DragonSlotDescriptionTest >> testCombineWithSlotDescription4 [
 
 	| desc1 desc2 |
-	desc1 := DragonSlotDescription new
+	desc1 := DragonPropertyDescription new
 		         name: #hello;
 		         yourself.
-	desc2 := DragonSlotDescription new
+	desc2 := DragonPropertyDescription new
 		         name: #hello;
 		         possibleSetterSelectors: { #setter1. #setter2 };
 		         yourself.
@@ -92,11 +92,11 @@ DragonSlotDescriptionTest >> testCombineWithSlotDescription4 [
 DragonSlotDescriptionTest >> testCombineWithSlotDescription5 [
 
 	| desc1 desc2 |
-	desc1 := DragonSlotDescription new
+	desc1 := DragonPropertyDescription new
 		         name: #hello;
 		         possibleSetterSelectors: { #setter1 };
 		         yourself.
-	desc2 := DragonSlotDescription new
+	desc2 := DragonPropertyDescription new
 		         name: #hello;
 		         possibleSetterSelectors: { #setter2 };
 		         yourself.
@@ -110,11 +110,11 @@ DragonSlotDescriptionTest >> testCombineWithSlotDescription5 [
 DragonSlotDescriptionTest >> testCombineWithSlotDescription6 [
 
 	| desc1 desc2 |
-	desc1 := DragonSlotDescription new
+	desc1 := DragonPropertyDescription new
 		         name: #hello;
 		         possibleSetterSelectors: { #setter1. #setter2 };
 		         yourself.
-	desc2 := DragonSlotDescription new
+	desc2 := DragonPropertyDescription new
 		         name: #hello;
 		         possibleSetterSelectors: { #setter2. #setter3 };
 		         yourself.

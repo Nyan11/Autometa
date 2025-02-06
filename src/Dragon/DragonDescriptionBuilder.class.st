@@ -90,7 +90,7 @@ DragonDescriptionBuilder >> buildAccessorsDescriptionForSelector: aSelector andI
 			             do: [ ^ self ] ].
 	allValueTypes := self reduceAllValuesToTypeValues: allValues.
 
-	description := DragonSlotDescription new
+	description := DragonPropertyDescription new
 		               name: aSelector;
 		               possibleGetterSelectors: { aSelector };
 		               possibleSetterSelectors: { aSelector asMutator };
@@ -155,7 +155,7 @@ DragonDescriptionBuilder >> buildSlotsFor: aClass [
 				matcherGetter executeTree: parseTree.
 				matcherGetter answer ifNotNil: [
 					possibleGetterSelectors add: method selector ] ] ].
-		description := DragonSlotDescription new
+		description := DragonPropertyDescription new
 			               name: slot name;
 			               possibleSetterSelectors: possibleSetterSelectors;
 			               possibleGetterSelectors: possibleGetterSelectors;
@@ -219,12 +219,14 @@ DragonDescriptionBuilder >> installDragonDescription: aDragonSlotDescription onC
 	| methodSelector methodString knownTypeValuesString possibleGetterSelectorsString possibleSetterSelectorsString protocol |
 	aClass dragonInstanceDescription
 		slotDescriptionNamed: aDragonSlotDescription name
-		ifFound: [ :description | (description knownTypeValues includesAll: aDragonSlotDescription knownTypeValues) ifTrue: [ ^ self ].
+		ifFound: [ :description |
+			(description knownTypeValues includesAll:
+				 aDragonSlotDescription knownTypeValues) ifTrue: [ ^ self ].
 			aDragonSlotDescription combineWithSlotDescription: description ].
 	aDragonSlotDescription knownTypeValues:
 		(self reduceAllTypeValues: aDragonSlotDescription knownTypeValues).
 
-	methodString := 'dragon<1s><r><r><t>%<dragonDescription><r><t>^ DragonSlotDescription new name: #<2s>; knownTypeValues: { <3s> }; possibleGetterSelectors: { <4s> }; possibleSetterSelectors: { <5s> }; yourself'.
+	methodString := 'dragon<1s><r><r><t>%<dragonDescription><r><t>^ DragonPropertyDescription new name: #<2s>; knownTypeValues: { <3s> }; possibleGetterSelectors: { <4s> }; possibleSetterSelectors: { <5s> }; yourself'.
 
 	knownTypeValuesString := String streamContents: [ :s |
 		                         aDragonSlotDescription knownTypeValues

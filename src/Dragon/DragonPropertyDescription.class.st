@@ -1,5 +1,5 @@
 Class {
-	#name : 'DragonSlotDescription',
+	#name : 'DragonPropertyDescription',
 	#superclass : 'Object',
 	#instVars : [
 		'name',
@@ -12,8 +12,13 @@ Class {
 	#tag : 'Model'
 }
 
+{ #category : 'visiting' }
+DragonPropertyDescription >> acceptDragonVisitor: aDragonVisitor [ 
+	aDragonVisitor visitPropertyDescription: self.
+]
+
 { #category : 'as yet unclassified' }
-DragonSlotDescription >> combineWithSlotDescription: aDragonSlotDescription [
+DragonPropertyDescription >> combineWithSlotDescription: aDragonSlotDescription [
 
 	self name = aDragonSlotDescription name ifFalse: [
 		^ DragonErrorCombineDifferentSlotDescription new signal ].
@@ -27,7 +32,7 @@ DragonSlotDescription >> combineWithSlotDescription: aDragonSlotDescription [
 ]
 
 { #category : 'initialization' }
-DragonSlotDescription >> initialize [
+DragonPropertyDescription >> initialize [
 
 	super initialize.
 	knownTypeValues := {  }.
@@ -36,7 +41,7 @@ DragonSlotDescription >> initialize [
 ]
 
 { #category : 'as yet unclassified' }
-DragonSlotDescription >> installDragonDescriptionOn: aClass [
+DragonPropertyDescription >> installDragonDescriptionOn: aClass [
 
 	| methodSelector methodString knownTypeValuesString possibleGetterSelectorsString possibleSetterSelectorsString |
 	aClass dragonInstanceDescription
@@ -83,47 +88,47 @@ DragonSlotDescription >> installDragonDescriptionOn: aClass [
 ]
 
 { #category : 'accessing' }
-DragonSlotDescription >> knownTypeValues [
+DragonPropertyDescription >> knownTypeValues [
 
 	^ knownTypeValues
 ]
 
 { #category : 'accessing' }
-DragonSlotDescription >> knownTypeValues: anObject [
+DragonPropertyDescription >> knownTypeValues: anObject [
 
 	knownTypeValues := anObject
 ]
 
 { #category : 'accessing' }
-DragonSlotDescription >> name [
+DragonPropertyDescription >> name [
 
 	^ name
 ]
 
 { #category : 'accessing' }
-DragonSlotDescription >> name: anObject [
+DragonPropertyDescription >> name: anObject [
 
 	name := anObject
 ]
 
 { #category : 'accessing' }
-DragonSlotDescription >> possibleGetterSelectors [
+DragonPropertyDescription >> possibleGetterSelectors [
 
 	^ possibleGetterSelectors
 ]
 
 { #category : 'as yet unclassified' }
-DragonSlotDescription >> possibleGetterSelectors: aCollection [
+DragonPropertyDescription >> possibleGetterSelectors: aCollection [
 
 	possibleGetterSelectors := aCollection
 ]
 
 { #category : 'accessing' }
-DragonSlotDescription >> possibleSetterSelectors [
+DragonPropertyDescription >> possibleSetterSelectors [
 	^ possibleSetterSelectors
 ]
 
 { #category : 'as yet unclassified' }
-DragonSlotDescription >> possibleSetterSelectors: aCollection [ 
+DragonPropertyDescription >> possibleSetterSelectors: aCollection [ 
 	possibleSetterSelectors := aCollection
 ]

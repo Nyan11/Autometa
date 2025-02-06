@@ -10,6 +10,18 @@ Class {
 	#tag : 'Model'
 }
 
+{ #category : 'visiting' }
+DragonDescription >> acceptDragonVisitor: aDragonVisitor [
+
+	aDragonVisitor visitDescription: self
+]
+
+{ #category : 'testing' }
+DragonDescription >> isFinalType [
+
+	^ self objectClass isLiteral
+]
+
 { #category : 'accessing' }
 DragonDescription >> objectClass [
 

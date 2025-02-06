@@ -14,7 +14,7 @@ Class {
 DragonTestObject >> dragonName [
 
 	<dragonDescription>
-	^ DragonSlotDescription new
+	^ DragonPropertyDescription new
 		  name: #name;
 		  knownTypeValues: { String };
 		  yourself
@@ -24,7 +24,7 @@ DragonTestObject >> dragonName [
 DragonTestObject >> dragonOtherSlot [
 
 	<dragonDescription>
-	^ DragonSlotDescription new
+	^ DragonPropertyDescription new
 		  name: #otherSlot;
 		  knownTypeValues: { UndefinedObject };
 		  yourself
@@ -34,7 +34,7 @@ DragonTestObject >> dragonOtherSlot [
 DragonTestObject >> dragonOtherSlot2 [
 
 	<dragonDescription>
-	^ DragonSlotDescription new
+	^ DragonPropertyDescription new
 		  name: #otherSlot;
 		  knownTypeValues: { UndefinedObject };
 		  yourself
