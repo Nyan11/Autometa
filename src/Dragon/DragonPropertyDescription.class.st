@@ -5,7 +5,8 @@ Class {
 		'name',
 		'knownTypeValues',
 		'possibleSetterSelectors',
-		'possibleGetterSelectors'
+		'possibleGetterSelectors',
+		'multiplicity'
 	],
 	#category : 'Dragon-Model',
 	#package : 'Dragon',
@@ -97,6 +98,17 @@ DragonPropertyDescription >> knownTypeValues [
 DragonPropertyDescription >> knownTypeValues: anObject [
 
 	knownTypeValues := anObject
+]
+
+{ #category : 'accessing' }
+DragonPropertyDescription >> multiplicity [
+
+	^ multiplicity
+]
+
+{ #category : 'as yet unclassified' }
+DragonPropertyDescription >> multiplicity: anAssociation [ 
+	multiplicity:=anAssociation
 ]
 
 { #category : 'accessing' }

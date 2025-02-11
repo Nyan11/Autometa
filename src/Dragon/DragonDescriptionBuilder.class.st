@@ -77,7 +77,7 @@ DragonDescriptionBuilder >> build [
 { #category : 'as yet unclassified' }
 DragonDescriptionBuilder >> buildAccessorsDescriptionForSelector: aSelector andInstances: aCollectionOfObject andClass: aClass [
 
-	| allValues allValueTypes description |
+	| allValues allValueTypes description multiplicity |
 	(aClass package name beginsWith: 'Collection') ifTrue: [ ^ self ].
 	(aClass package name beginsWith: 'Display') ifTrue: [ ^ self ].
 	(aClass package name beginsWith: 'Text') ifTrue: [ ^ self ].
@@ -89,12 +89,14 @@ DragonDescriptionBuilder >> buildAccessorsDescriptionForSelector: aSelector andI
 			             on: Error
 			             do: [ ^ self ] ].
 	allValueTypes := self reduceAllValuesToTypeValues: allValues.
+	multiplicity := self multiplicityFromValues: allValues.
 
 	description := DragonPropertyDescription new
 		               name: aSelector;
 		               possibleGetterSelectors: { aSelector };
 		               possibleSetterSelectors: { aSelector asMutator };
 		               knownTypeValues: allValueTypes;
+		               multiplicity: multiplicity;
 		               yourself.
 
 	self installDragonDescription: description onClass: aClass
@@ -110,12 +112,12 @@ DragonDescriptionBuilder >> buildAccessorsFor: aClass [
 		                ifFalse: [
 		                aClass withAllSubclasses flatCollect: #allInstances ].
 	allZeroArgMethod := aClass methods
-		                    select: [ :m |
-		                    m numArgs = 0 and: [ m protocol ~= 'private' ] ]
+		                    reject: [ :m |
+		                    m numArgs > 0 or: [ m protocol name beginsWith: 'private' ] ]
 		                    thenCollect: #selector.
 	allOneArgMethod := aClass methods
-		                   select: [ :m |
-		                   m numArgs = 1 and: [ m protocol ~= 'private' ] ]
+		                   reject: [ :m |
+		                   m numArgs ~= 1 or: [ m protocol name beginsWith: 'private' ] ]
 		                   thenCollect: #selector.
 	allGetterWithAssociatedMutator := allZeroArgMethod select: [ :getter |
 		                                  allOneArgMethod anySatisfy: [
@@ -226,7 +228,7 @@ DragonDescriptionBuilder >> installDragonDescription: aDragonSlotDescription onC
 	aDragonSlotDescription knownTypeValues:
 		(self reduceAllTypeValues: aDragonSlotDescription knownTypeValues).
 
-	methodString := 'dragon<1s><r><r><t>%<dragonDescription><r><t>^ DragonPropertyDescription new name: #<2s>; knownTypeValues: { <3s> }; possibleGetterSelectors: { <4s> }; possibleSetterSelectors: { <5s> }; yourself'.
+	methodString := 'dragon<1s><r><r><t>%<dragonDescription><r><t>^ DragonPropertyDescription new name: #<2s>; knownTypeValues: { <3s> }; possibleGetterSelectors: { <4s> }; possibleSetterSelectors: { <5s> }; multiplicity: <6s>;yourself'.
 
 	knownTypeValuesString := String streamContents: [ :s |
 		                         aDragonSlotDescription knownTypeValues
@@ -249,11 +251,28 @@ DragonDescriptionBuilder >> installDragonDescription: aDragonSlotDescription onC
 				                   aDragonSlotDescription name.
 				                   knownTypeValuesString.
 				                   possibleGetterSelectorsString.
-				                   possibleSetterSelectorsString }).
+				                   possibleSetterSelectorsString.
+										aDragonSlotDescription multiplicity printString }).
 	self packageToGenerate
 		ifNil: [ protocol := 'dragon meta description' ]
 		ifNotNil: [ protocol := '*' , self packageToGenerate name ].
 	(aClass methodNamed: methodSelector) protocol: protocol
+]
+
+{ #category : 'as yet unclassified' }
+DragonDescriptionBuilder >> multiplicityFromValues: aCollectionOfObjects [
+
+	| min max allCollection |
+	min := 1.
+	(aCollectionOfObjects includes: nil) ifTrue: [ min := 0 ].
+	allCollection := aCollectionOfObjects select: #isCollection.
+
+	allCollection ifEmpty: [ ^ min -> 1 ].
+
+	max := 1.
+	max := (allCollection reduce: [ :a :b |
+		        'a' repeat: (a size max: b size) ]) size.
+	^ min -> max
 ]
 
 { #category : 'accessing' }
@@ -291,6 +310,7 @@ DragonDescriptionBuilder >> reduceAllValuesToTypeValues: aCollectionOfObjects [
 
 	| allClasses |
 	allClasses := (aCollectionOfObjects collect: #class) asSet.
+	allClasses := allClasses reject: [ :each | each = UndefinedObject ].
 	^ self reduceAllTypeValues: allClasses
 ]
 
