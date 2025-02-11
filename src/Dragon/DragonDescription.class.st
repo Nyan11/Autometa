@@ -19,7 +19,7 @@ DragonDescription >> acceptDragonVisitor: aDragonVisitor [
 { #category : 'testing' }
 DragonDescription >> isFinalType [
 
-	^ self objectClass isLiteral
+	^ self objectClass isDragonFinal
 ]
 
 { #category : 'accessing' }

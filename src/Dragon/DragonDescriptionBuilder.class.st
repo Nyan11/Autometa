@@ -12,6 +12,26 @@ Class {
 }
 
 { #category : 'as yet unclassified' }
+DragonDescriptionBuilder class >> buildClassAndSubClassDescriptions: aClass inPackage: aPackage [
+
+	self
+		buildClassDescriptions: aClass withAllSubclasses
+		inPackage: aPackage
+		withVerboseLevel: DragonVerboseLevel new
+]
+
+{ #category : 'as yet unclassified' }
+DragonDescriptionBuilder class >> buildClassAndSuperClassDescriptions: aClass inPackage: aPackage [
+
+	(aClass = Object or: [ aClass = ProtoObject ]) ifTrue: [
+		^ Error signal: 'cannot do that !' ].
+	self
+		buildClassDescriptions: aClass withAllSuperclasses
+		inPackage: aPackage
+		withVerboseLevel: DragonVerboseLevel new
+]
+
+{ #category : 'as yet unclassified' }
 DragonDescriptionBuilder class >> buildClassDescriptionInPackage: aClassPackage inPackage: aPackage [
 
 	self
@@ -31,15 +51,6 @@ DragonDescriptionBuilder class >> buildClassDescriptions: aCollectionOfClasses i
 		           yourself.
 
 	[ builder build ] fork
-]
-
-{ #category : 'as yet unclassified' }
-DragonDescriptionBuilder class >> buildClassHierarchyDescription: aClass inPackage: aPackage [
-
-	self
-		buildClassDescriptions: aClass withAllSubclasses
-		inPackage: aPackage
-		withVerboseLevel: DragonVerboseLevel new
 ]
 
 { #category : 'as yet unclassified' }

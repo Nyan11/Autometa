@@ -1,6 +1,12 @@
 Extension { #name : 'Object' }
 
 { #category : '*Dragon' }
+Object >> asDragonType [
+
+	^ self class
+]
+
+{ #category : '*Dragon' }
 Object class >> dragonFullDescription [
 
 	| description |
@@ -35,6 +41,16 @@ Object >> dragonInstanceDescription [
 ]
 
 { #category : '*Dragon' }
+Object >> dragonObjectConstructor [
+
+	<dragonConstructor>
+	^ DragonConstructorDescription new
+		  constructorArguments: {  };
+		  constructorValuable: [ :class | class new ];
+		  yourself
+]
+
+{ #category : '*Dragon' }
 Object class >> generateDragonDescription [
 
 	^ self generateDragonDescriptionInPackage: nil
@@ -59,6 +75,12 @@ Object class >> generateDragonDescriptionInPackage: aPackage [
 Object >> generateDragonDescriptionInPackage: aPackage [
 
 	^ self class generateDragonDescriptionInPackage: aPackage
+]
+
+{ #category : '*Dragon' }
+Object >> isDragonFinal [
+
+	^ self class isDragonFinal
 ]
 
 { #category : '*Dragon' }

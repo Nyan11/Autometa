@@ -4,12 +4,19 @@ Class {
 	#instVars : [
 		'knownClasses',
 		'missingDescription',
-		'emptyProperties'
+		'emptyProperties',
+		'collectionDescriptions'
 	],
 	#category : 'Dragon-Model',
 	#package : 'Dragon',
 	#tag : 'Model'
 }
+
+{ #category : 'visiting' }
+DragonMissingDescriptionVisitor >> collectionDescriptions [
+
+	^ collectionDescriptions
+]
 
 { #category : 'accessing' }
 DragonMissingDescriptionVisitor >> emptyProperties [
@@ -24,6 +31,7 @@ DragonMissingDescriptionVisitor >> initialize [
 	knownClasses := Set new.
 	missingDescription := Set new.
 	emptyProperties := OrderedCollection new.
+	collectionDescriptions := OrderedCollection new
 ]
 
 { #category : 'visiting' }
@@ -46,8 +54,8 @@ DragonMissingDescriptionVisitor >> visitDescription: aDragonDescription [
 	self knownClasses add: aDragonDescription objectClass.
 
 	aDragonDescription slotDescriptions ifEmpty: [
-		aDragonDescription isFinalType ifFalse: [
-			self missingDescription add: aDragonDescription ].
+		aDragonDescription isFinalType ifTrue: [ ^ self ].
+		self missingDescription add: aDragonDescription.
 		^ self ].
 	aDragonDescription slotDescriptions do: [ :each |
 		each acceptDragonVisitor: self ]
@@ -57,9 +65,18 @@ DragonMissingDescriptionVisitor >> visitDescription: aDragonDescription [
 DragonMissingDescriptionVisitor >> visitPropertyDescription: aDragonPropertyDescription [
 
 	| allTypeDescriptions |
-	aDragonPropertyDescription knownTypeValues ifEmpty: [ self emptyProperties add: aDragonPropertyDescription. ^ self ].
-	(aDragonPropertyDescription knownTypeValues size = 1 and: [ aDragonPropertyDescription knownTypeValues anyOne = UndefinedObject ]) ifTrue: [ self emptyProperties add: aDragonPropertyDescription. ^ self ].
-	
-	allTypeDescriptions := aDragonPropertyDescription knownTypeValues collect: [ :each | each dragonFullDescription ].
-	allTypeDescriptions do: [ :each | each acceptDragonVisitor: self ].
+	aDragonPropertyDescription knownTypeValues ifEmpty: [
+		self emptyProperties add: aDragonPropertyDescription.
+		^ self ].
+	(aDragonPropertyDescription knownTypeValues size = 1 and: [
+		 aDragonPropertyDescription knownTypeValues anyOne = UndefinedObject ])
+		ifTrue: [
+			self emptyProperties add: aDragonPropertyDescription.
+			^ self ].
+
+	(aDragonPropertyDescription knownTypeValues anySatisfy: [ :cls | (cls isKindOf: Collection class) and: [ (cls isKindOf: String class) not ] ]) ifTrue: [ self collectionDescriptions add: aDragonPropertyDescription ].
+	allTypeDescriptions := aDragonPropertyDescription knownTypeValues
+		                       collect: [ :each |
+		                       each dragonFullDescription ].
+	allTypeDescriptions do: [ :each | each acceptDragonVisitor: self ]
 ]
