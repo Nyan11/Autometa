@@ -22,7 +22,7 @@ AutometaCmdMenuGroup >> description [
 { #category : 'accessing' }
 AutometaCmdMenuGroup >> icon [
 
-	^ AutometaIcon autometaIcon
+	^ AutometaUtils autometaIcon
 ]
 
 { #category : 'accessing' }

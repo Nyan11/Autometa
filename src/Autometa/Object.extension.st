@@ -26,7 +26,7 @@ Object >> autometaFullDescription [
 { #category : '*Autometa' }
 Object class >> autometaGenerateDescription [
 
-	^ self autometaGenerateDescriptionInPackage: nil
+	^ self autometaGenerateDescriptionInPackage: AutometaUtils defaultPackage
 ]
 
 { #category : '*Autometa' }
