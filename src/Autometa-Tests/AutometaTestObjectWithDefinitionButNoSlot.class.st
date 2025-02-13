@@ -2,8 +2,7 @@ Class {
 	#name : 'AutometaTestObjectWithDefinitionButNoSlot',
 	#superclass : 'Object',
 	#category : 'Autometa-Tests',
-	#package : 'Autometa',
-	#tag : 'Tests'
+	#package : 'Autometa-Tests'
 }
 
 { #category : 'as yet unclassified' }

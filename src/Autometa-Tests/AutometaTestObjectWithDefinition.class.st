@@ -5,8 +5,7 @@ Class {
 		'slot'
 	],
 	#category : 'Autometa-Tests',
-	#package : 'Autometa',
-	#tag : 'Tests'
+	#package : 'Autometa-Tests'
 }
 
 { #category : 'dragon meta description' }

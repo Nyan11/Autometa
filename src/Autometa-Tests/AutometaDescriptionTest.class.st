@@ -2,8 +2,7 @@ Class {
 	#name : 'AutometaDescriptionTest',
 	#superclass : 'TestCase',
 	#category : 'Autometa-Tests',
-	#package : 'Autometa',
-	#tag : 'Tests'
+	#package : 'Autometa-Tests'
 }
 
 { #category : 'tests' }

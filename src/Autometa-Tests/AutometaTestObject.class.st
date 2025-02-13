@@ -6,8 +6,7 @@ Class {
 		'otherSlot'
 	],
 	#category : 'Autometa-Tests',
-	#package : 'Autometa',
-	#tag : 'Tests'
+	#package : 'Autometa-Tests'
 }
 
 { #category : 'as yet unclassified' }

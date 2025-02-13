@@ -5,8 +5,7 @@ Class {
 		'subClassSubclassSlot'
 	],
 	#category : 'Autometa-Tests',
-	#package : 'Autometa',
-	#tag : 'Tests'
+	#package : 'Autometa-Tests'
 }
 
 { #category : 'accessing' }

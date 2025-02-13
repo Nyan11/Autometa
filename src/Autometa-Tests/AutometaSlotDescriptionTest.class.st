@@ -2,8 +2,7 @@ Class {
 	#name : 'AutometaSlotDescriptionTest',
 	#superclass : 'TestCase',
 	#category : 'Autometa-Tests',
-	#package : 'Autometa',
-	#tag : 'Tests'
+	#package : 'Autometa-Tests'
 }
 
 { #category : 'running' }
