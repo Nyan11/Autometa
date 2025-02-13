@@ -1,7 +1,7 @@
 Class {
 	#name : 'AutometaErrorCombineDifferentSlotDescription',
 	#superclass : 'AutometaError',
-	#category : 'Autometa-Model',
+	#category : 'Autometa-Builders',
 	#package : 'Autometa',
-	#tag : 'Model'
+	#tag : 'Builders'
 }

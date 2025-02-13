@@ -4,9 +4,9 @@ Class {
 	#classInstVars : [
 		'icons'
 	],
-	#category : 'Autometa-Command',
+	#category : 'Autometa-Commands',
 	#package : 'Autometa',
-	#tag : 'Command'
+	#tag : 'Commands'
 }
 
 { #category : 'as yet unclassified' }

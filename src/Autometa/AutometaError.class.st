@@ -1,7 +1,7 @@
 Class {
 	#name : 'AutometaError',
 	#superclass : 'Error',
-	#category : 'Autometa-Model',
+	#category : 'Autometa-Builders',
 	#package : 'Autometa',
-	#tag : 'Model'
+	#tag : 'Builders'
 }

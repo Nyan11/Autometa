@@ -1,9 +1,9 @@
 Class {
 	#name : 'AutometaNoVerboseLevel',
 	#superclass : 'Object',
-	#category : 'Autometa-Model',
+	#category : 'Autometa-Builders',
 	#package : 'Autometa',
-	#tag : 'Model'
+	#tag : 'Builders'
 }
 
 { #category : 'as yet unclassified' }

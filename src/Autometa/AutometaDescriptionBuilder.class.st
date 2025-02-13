@@ -6,9 +6,9 @@ Class {
 		'packageToGenerate',
 		'verboseLevel'
 	],
-	#category : 'Autometa-Model',
+	#category : 'Autometa-Builders',
 	#package : 'Autometa',
-	#tag : 'Model'
+	#tag : 'Builders'
 }
 
 { #category : 'as yet unclassified' }

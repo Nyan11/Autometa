@@ -125,7 +125,7 @@ AutometaSlotDescriptionTest >> testCombineWithSlotDescription6 [
 ]
 
 { #category : 'tests' }
-AutometaSlotDescriptionTest >> testInstallDragonDescriptionOn1 [
+AutometaSlotDescriptionTest >> testInstallAutometaDescriptionOn1 [
 
 	| object1 |
 	object1 := AutometaTestObjectNoDefinition new
@@ -137,21 +137,24 @@ AutometaSlotDescriptionTest >> testInstallDragonDescriptionOn1 [
 		assert: object1 autometaFullDescription slotDescriptions size
 		equals: 1.
 	self
-		assert: (object1 autometaFullDescription slotDescriptionNamed: #slot)
+		assert:
+			(object1 autometaFullDescription slotDescriptionNamed: #slot)
 				knownTypeValues
 		equals: { String }.
 	self
-		assert: (object1 autometaFullDescription slotDescriptionNamed: #slot)
+		assert:
+			(object1 autometaFullDescription slotDescriptionNamed: #slot)
 				possibleSetterSelectors
 		equals: { #slot: }.
 	self
-		assert: (object1 autometaFullDescription slotDescriptionNamed: #slot)
+		assert:
+			(object1 autometaFullDescription slotDescriptionNamed: #slot)
 				possibleGetterSelectors
 		equals: { #slot }
 ]
 
 { #category : 'tests' }
-AutometaSlotDescriptionTest >> testInstallDragonDescriptionOn2 [
+AutometaSlotDescriptionTest >> testInstallAutometaDescriptionOn2 [
 
 	| object1 object2 |
 	object1 := AutometaTestObjectNoDefinition new
@@ -166,13 +169,14 @@ AutometaSlotDescriptionTest >> testInstallDragonDescriptionOn2 [
 		assert: object1 autometaFullDescription slotDescriptions size
 		equals: 1.
 	self
-		assert: (object1 autometaFullDescription slotDescriptionNamed: #slot)
+		assert:
+			(object1 autometaFullDescription slotDescriptionNamed: #slot)
 				knownTypeValues
 		equals: { String }
 ]
 
 { #category : 'tests' }
-AutometaSlotDescriptionTest >> testInstallDragonDescriptionOn3 [
+AutometaSlotDescriptionTest >> testInstallAutometaDescriptionOn3 [
 
 	| object1 object2 |
 	object1 := AutometaTestObjectNoDefinition new
@@ -196,7 +200,7 @@ AutometaSlotDescriptionTest >> testInstallDragonDescriptionOn3 [
 ]
 
 { #category : 'tests' }
-AutometaSlotDescriptionTest >> testInstallDragonDescriptionOn4 [
+AutometaSlotDescriptionTest >> testInstallAutometaDescriptionOn4 [
 
 	| object1 |
 	object1 := AutometaTestObjectNoDefinitionSubclass new
@@ -209,27 +213,29 @@ AutometaSlotDescriptionTest >> testInstallDragonDescriptionOn4 [
 		assert: object1 autometaFullDescription slotDescriptions size
 		equals: 2.
 	self
-		assert: (object1 autometaFullDescription slotDescriptionNamed: #slot)
+		assert:
+			(object1 autometaFullDescription slotDescriptionNamed: #slot)
 				knownTypeValues
 		equals: { String }.
 	self
-		assert: (object1 autometaFullDescription slotDescriptionNamed: #slot)
+		assert:
+			(object1 autometaFullDescription slotDescriptionNamed: #slot)
 				possibleSetterSelectors
 		equals: { #slot: }.
 	self
 		assert:
-			(object1 autometaFullDescription slotDescriptionNamed: #subclassSlot)
-				possibleSetterSelectors
+			(object1 autometaFullDescription slotDescriptionNamed:
+				 #subclassSlot) possibleSetterSelectors
 		equals: { #subclassSlot: }.
 	self
 		assert:
-			(object1 autometaFullDescription slotDescriptionNamed: #subclassSlot)
-				knownTypeValues
+			(object1 autometaFullDescription slotDescriptionNamed:
+				 #subclassSlot) knownTypeValues
 		equals: { Integer }
 ]
 
 { #category : 'tests' }
-AutometaSlotDescriptionTest >> testInstallDragonDescriptionOn5 [
+AutometaSlotDescriptionTest >> testInstallAutometaDescriptionOn5 [
 
 	| object1 descriptionSlot |
 	object1 := AutometaTestObjectWithDefinition new
@@ -278,7 +284,7 @@ AutometaSlotDescriptionTest >> testInstallDragonDescriptionOn5 [
 ]
 
 { #category : 'tests' }
-AutometaSlotDescriptionTest >> testInstallDragonDescriptionOn6 [
+AutometaSlotDescriptionTest >> testInstallAutometaDescriptionOn6 [
 
 	| object1 descriptionSlot |
 	object1 := AutometaTestObjectWithDefinitionButNoSlot new.
@@ -292,13 +298,12 @@ AutometaSlotDescriptionTest >> testInstallDragonDescriptionOn6 [
 	self
 		assert: object1 autometaFullDescription slotDescriptions size
 		equals: 1.
-	descriptionSlot := object1 autometaFullDescription slotDescriptionNamed:
-		                   #test.
+	descriptionSlot := object1 autometaFullDescription
+		                   slotDescriptionNamed: #test.
 	self assert: descriptionSlot knownTypeValues size equals: 1.
 	self
 		assertCollection: descriptionSlot knownTypeValues
-		includesAll: {
-				Symbol }.
+		includesAll: { Symbol }.
 	self assert: descriptionSlot possibleGetterSelectors size equals: 1.
 	self
 		assertCollection: descriptionSlot possibleGetterSelectors
@@ -310,7 +315,7 @@ AutometaSlotDescriptionTest >> testInstallDragonDescriptionOn6 [
 ]
 
 { #category : 'tests' }
-AutometaSlotDescriptionTest >> testInstallDragonDescriptionOn7 [
+AutometaSlotDescriptionTest >> testInstallAutometaDescriptionOn7 [
 
 	| object1 object2 |
 	object1 := AutometaTestObjectNoDefinition new

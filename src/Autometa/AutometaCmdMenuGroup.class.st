@@ -1,9 +1,9 @@
 Class {
 	#name : 'AutometaCmdMenuGroup',
 	#superclass : 'CmdMenuGroup',
-	#category : 'Autometa-Command',
+	#category : 'Autometa-Commands',
 	#package : 'Autometa',
-	#tag : 'Command'
+	#tag : 'Commands'
 }
 
 { #category : 'accessing' }

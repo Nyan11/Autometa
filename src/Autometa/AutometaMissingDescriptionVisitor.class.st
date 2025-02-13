@@ -7,9 +7,9 @@ Class {
 		'emptyProperties',
 		'collectionDescriptions'
 	],
-	#category : 'Autometa-Model',
+	#category : 'Autometa-Visitors',
 	#package : 'Autometa',
-	#tag : 'Model'
+	#tag : 'Visitors'
 }
 
 { #category : 'visiting' }
