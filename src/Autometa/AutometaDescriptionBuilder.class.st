@@ -135,42 +135,6 @@ AutometaDescriptionBuilder >> buildAccessorsFor: aClass [
 							andClass: aClass ] ] ] ] ]
 ]
 
-{ #category : 'building' }
-AutometaDescriptionBuilder >> buildSlotsFor: aClass [
-
-	| allInstances |
-	"We check for each class all instances and subinstances that could contains the value for each slot."
-	allInstances := aClass withAllSubclasses flatCollect: #allInstances.
-	aClass slots do: [ :slot |
-		| allValues allValueTypes description matcherSetter matcherGetter possibleSetterSelectors possibleGetterSelectors |
-		allValues := allInstances collect: [ :inst | slot read: inst ].
-		allValueTypes := self reduceAllValuesToTypeValues: allValues.
-		"We need to find all possible setters for each slot.
-		We recover all method that are using this slot and select only the one with one argument."
-		matcherSetter := RBParseTreeSearcher setterMethod: slot name.
-		matcherGetter := RBParseTreeSearcher getterMethod: slot name.
-		possibleSetterSelectors := OrderedCollection new.
-		possibleGetterSelectors := OrderedCollection new.
-		slot usingMethods do: [ :method |
-			| parseTree |
-			parseTree := method parseTree.
-			method numArgs = 1 ifTrue: [
-				matcherSetter executeTree: parseTree.
-				matcherSetter answer ifNotNil: [
-					possibleSetterSelectors add: method selector ] ].
-			method numArgs = 0 ifTrue: [
-				matcherGetter executeTree: parseTree.
-				matcherGetter answer ifNotNil: [
-					possibleGetterSelectors add: method selector ] ] ].
-		description := AutometaPropertyDescription new
-			               name: slot name;
-			               possibleSetterSelectors: possibleSetterSelectors;
-			               possibleGetterSelectors: possibleGetterSelectors;
-			               knownTypeValues: allValueTypes;
-			               yourself.
-		self installAutometaDescription: description ]
-]
-
 { #category : 'as yet unclassified' }
 AutometaDescriptionBuilder >> classToGenerate: aClass [
 
@@ -200,6 +164,16 @@ AutometaDescriptionBuilder >> commonSuperClassBetween: aClass1 and: aClass2 [
 		ifTrue: [ ^ aClass1 ].
 	class1Collection do: [ :each | (class2Collection includes: each) ifTrue: [ ^ each ] ].
 	^ Object
+]
+
+{ #category : 'as yet unclassified' }
+AutometaDescriptionBuilder >> commonSuperClassBetween: aClass1 and: aClass2 exceptClasses: aCollectionOfClasses [
+
+	| clazz |
+	"Return the common super class between the 2 classes. If it is Object return nil"
+	clazz := self commonSuperClassBetween: aClass1 and: aClass2.
+	(aCollectionOfClasses includes: clazz) ifTrue: [ ^ nil ].
+	^ clazz
 ]
 
 { #category : 'as yet unclassified' }
@@ -313,13 +287,16 @@ AutometaDescriptionBuilder >> reduceAllTypeValues: aCollectionOfClass [
 		refinedClasses ifEmpty: [ refinedClasses add: classToAdd ].
 		refinedClasses do: [ :refinedClass |
 			(self
-				 commonSuperClassExceptObjectBetween: classToAdd
-				 and: refinedClass)
+				 commonSuperClassBetween: classToAdd
+				 and: refinedClass
+				 exceptClasses: {
+						 Object.
+						 Magnitude })
 				ifNil: [ refinedClasses add: classToAdd ]
 				ifNotNil: [ :newClass |
 					refinedClasses remove: refinedClass.
 					refinedClasses add: newClass ] ] ].
-	^ refinedClasses asArray
+	^ refinedClasses asSet asArray
 ]
 
 { #category : 'as yet unclassified' }
