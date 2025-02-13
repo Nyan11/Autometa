@@ -10,16 +10,16 @@ Class {
 }
 
 { #category : 'as yet unclassified' }
-AutometaIcon class >> dragonIcon [
+AutometaIcon class >> autometaIcon [
 
-	<script: 'self dragonIcon inspect'>
-	^ self icons at: #dragon ifAbsentPut: [
+	<script: 'self autometaIcon inspect'>
+	^ self icons at: #autometa ifAbsentPut: [
 		  Form fromBinaryStream:
-			  self dragonIconEncoding base64Decoded readStream ]
+			  self autometaIconEncoding base64Decoded readStream ]
 ]
 
 { #category : 'as yet unclassified' }
-AutometaIcon class >> dragonIconEncoding [
+AutometaIcon class >> autometaIconEncoding [
 
 	^ 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAA+0lEQVQ4jWNwc3O7k5ubW8BAAsjIyGi3tbV9zsDAwMBiaWmprKCg0B8eHt7Mysq6R15evqC1tfUhuqby8nKbt2/f1ggLC1tERETwFxRA7ayvr/8PA/fv3/9fX1//Pykp6QLMVRkZGe0ZGRk35s+f///9+/dwtfb29v8xDEAG69ev/19fX////PnzWOVhBrDg8mdAQABDQEAAwfBgIiXwsAEUF3DIajJwadkQpfHb3ZeYBnBp2TBI5swkyoDnU9IZfj65gWrAt2tHGJ5PSSfOBdeOMDAwUDsMRqgXGOXl5f8rKCgwMDAwMJy4+5L4dHDtCMPPJzcYSXMvFgAAP4WjKBIQHIwAAAAASUVORK5CYII='
 ]

@@ -18,3 +18,22 @@ AutometaCmdMenuGroup >> description [
 
 	^ 'Autometa contextual menu'
 ]
+
+{ #category : 'accessing' }
+AutometaCmdMenuGroup >> icon [
+
+	^ AutometaIcon autometaIcon
+]
+
+{ #category : 'accessing' }
+AutometaCmdMenuGroup >> name [
+
+	^ 'Autometa'
+]
+
+{ #category : 'accessing' }
+AutometaCmdMenuGroup >> order [
+	"Idea to put molecule group to the end of menu"
+
+	^ SmallInteger maxVal -1
+]
