@@ -1,5 +1,5 @@
 Class {
-	#name : 'AutometaErrorNoSlotNamed',
+	#name : 'AutometaErrorNoPropertyNamed',
 	#superclass : 'AutometaErrorSlot',
 	#category : 'Autometa-Builders',
 	#package : 'Autometa',

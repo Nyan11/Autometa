@@ -3,7 +3,7 @@ Class {
 	#superclass : 'Object',
 	#instVars : [
 		'objectClass',
-		'slotDescriptions'
+		'properties'
 	],
 	#category : 'Autometa-Model',
 	#package : 'Autometa',
@@ -34,48 +34,51 @@ AutometaDescription >> objectClass: anObject [
 	objectClass := anObject
 ]
 
+{ #category : 'accessing' }
+AutometaDescription >> properties [
+
+	^ properties
+]
+
+{ #category : 'accessing' }
+AutometaDescription >> properties: anObject [
+
+	properties := anObject
+]
+
 { #category : 'as yet unclassified' }
-AutometaDescription >> slotDescriptionNamed: aString [
+AutometaDescription >> propertyNamed: aString [
 
 	self
-		slotDescriptionNamed: aString
+		propertyNamed: aString
 		ifFound: [ :dragonDescription | ^ dragonDescription ]
 		ifNotFound: [
-			AutometaErrorNoSlotNamed new
+			AutometaErrorNoPropertyNamed new
 				objectClass: self objectClass;
 				slotName: aString;
-				signal ].
+				signal ]
 ]
 
 { #category : 'as yet unclassified' }
-AutometaDescription >> slotDescriptionNamed: aString ifFound: aBlockClosureFound [
+AutometaDescription >> propertyNamed: aString ifFound: aBlockClosureFound [
 
-	self slotDescriptionNamed: aString ifFound: aBlockClosureFound ifNotFound: [  ]
+	self
+		propertyNamed: aString
+		ifFound: aBlockClosureFound
+		ifNotFound: [  ]
 ]
 
 { #category : 'as yet unclassified' }
-AutometaDescription >> slotDescriptionNamed: aString ifFound: aBlockClosureFound ifNotFound: aBlockClosureNotFound [
+AutometaDescription >> propertyNamed: aString ifFound: aBlockClosureFound ifNotFound: aBlockClosureNotFound [
 
 	| possibleSolutions |
-	possibleSolutions := self slotDescriptions select: [ :desc |
+	possibleSolutions := self properties select: [ :desc |
 		                     desc name = aString ].
 	possibleSolutions ifEmpty: [ ^ aBlockClosureNotFound value ].
 	possibleSolutions size > 1 ifTrue: [
-		^ AutometaErrorMultipeSlotNamed new
+		^ AutometaErrorMultipePropertiesNamed new
 			  objectClass: self objectClass;
 			  slotName: aString;
 			  signal ].
 	^ aBlockClosureFound value: possibleSolutions first
-]
-
-{ #category : 'accessing' }
-AutometaDescription >> slotDescriptions [
-
-	^ slotDescriptions
-]
-
-{ #category : 'accessing' }
-AutometaDescription >> slotDescriptions: anObject [
-
-	slotDescriptions := anObject
 ]

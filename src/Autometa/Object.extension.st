@@ -11,7 +11,7 @@ Object class >> autometaFullDescription [
 
 	| description |
 	description := AutometaDescription new objectClass: self.
-	description slotDescriptions:
+	description properties:
 		((Pragma allNamed: #autometaDescription from: self to: Object)
 			 collect: [ :pragma | pragma method valueWithReceiver: nil ]).
 	^ description

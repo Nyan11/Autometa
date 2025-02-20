@@ -38,7 +38,7 @@ AutometaDescriptionTest >> testAutometaDescription2 [
 		should: [
 			AutometaTestObject new autometaFullDescription slotDescriptionNamed:
 				#doNotExist ]
-		raise: AutometaErrorNoSlotNamed
+		raise: AutometaErrorNoPropertyNamed
 ]
 
 { #category : 'tests' }
@@ -48,5 +48,5 @@ AutometaDescriptionTest >> testAutometaDescription3 [
 		should: [
 			AutometaTestObject new autometaFullDescription slotDescriptionNamed:
 				#otherSlot ]
-		raise: AutometaErrorMultipeSlotNamed
+		raise: AutometaErrorMultipePropertiesNamed
 ]
