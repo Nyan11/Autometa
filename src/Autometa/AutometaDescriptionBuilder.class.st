@@ -199,7 +199,7 @@ AutometaDescriptionBuilder >> installAutometaDescription: aAutometaPropertyDescr
 
 	| methodSelector methodString knownTypeValuesString possibleGetterSelectorsString possibleSetterSelectorsString protocol |
 	aClass autometaInstanceDescription
-		slotDescriptionNamed: aAutometaPropertyDescription name
+		propertyNamed: aAutometaPropertyDescription name
 		ifFound: [ :description |
 			(description knownTypeValues includesAll:
 				 aAutometaPropertyDescription knownTypeValues) ifTrue: [ ^ self ].

@@ -55,7 +55,7 @@ Object class >> autometaInstanceDescription [
 
 	| description |
 	description := AutometaDescription new objectClass: self.
-	description slotDescriptions:
+	description properties:
 		((Pragma allNamed: #dragonDescription from: self to: self) collect: [
 			 :pragma | pragma method valueWithReceiver: nil ]).
 	^ description
